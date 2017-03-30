@@ -20,6 +20,9 @@ import com.google.cloud.tools.eclipse.login.IGoogleLoginService;
 import com.google.cloud.tools.eclipse.login.Messages;
 import com.google.cloud.tools.login.Account;
 import com.google.common.annotations.VisibleForTesting;
+import java.net.MalformedURLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -28,6 +31,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -40,6 +44,8 @@ import org.eclipse.swt.widgets.Shell;
  * logging out all accounts.
  */
 public class AccountsPanel extends PopupDialog {
+
+  private static final Logger logger = Logger.getLogger(AccountsPanel.class.getName());
 
   @VisibleForTesting
   static final String CSS_CLASS_NAME_KEY = "org.eclipse.e4.ui.css.CssClassName";
@@ -79,7 +85,11 @@ public class AccountsPanel extends PopupDialog {
 
   @VisibleForTesting
   void createAccountsPane(Composite container) {
+
     for (Account account : loginService.getAccounts()) {
+      Label avatarPlaceholder = new Label(container, SWT.NONE);
+      avatarPlaceholder.setData(CSS_CLASS_NAME_KEY, "avatar");
+
       Label name = new Label(container, SWT.LEAD);
       if (account.getName() != null) {
         name.setText(account.getName());
@@ -92,6 +102,21 @@ public class AccountsPanel extends PopupDialog {
 
       Label separator = new Label(container, SWT.HORIZONTAL | SWT.SEPARATOR);
       separator.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+
+      Point nameSize = name.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+      int avatarHeight = nameSize.y * 3;
+
+      GridData gridData = new GridData();
+      gridData.heightHint = avatarHeight;
+      gridData.widthHint = avatarHeight;
+      avatarPlaceholder.setLayoutData(gridData);
+
+      try {
+        new AsyncImageSetterJob(account.getAvatarUrl(), avatarPlaceholder,
+            avatarHeight, avatarHeight).schedule();
+      } catch (MalformedURLException ex) {
+        logger.log(Level.WARNING, "malformed image url", ex);
+      }
     }
   }
 
