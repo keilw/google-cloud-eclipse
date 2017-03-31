@@ -84,38 +84,41 @@ public class AccountsPanel extends PopupDialog {
   }
 
   @VisibleForTesting
-  void createAccountsPane(Composite container) {
-
+  void createAccountsPane(Composite accountArea) {
     for (Account account : loginService.getAccounts()) {
-      Label avatar = new Label(container, SWT.NONE);
+      Composite accountRow = new Composite(accountArea, SWT.NONE);
+
+      Label avatar = new Label(accountRow, SWT.NONE);
       avatar.setData(CSS_CLASS_NAME_KEY, "avatar");
 
-      Label name = new Label(container, SWT.LEAD);
+      Composite secondColumn = new Composite(accountRow, SWT.NONE);
+
+      Label name = new Label(secondColumn, SWT.NONE);
       if (account.getName() != null) {
         name.setText(account.getName());
       }
       name.setData(CSS_CLASS_NAME_KEY, "accountName");
 
-      Label email = new Label(container, SWT.LEAD);
+      Label email = new Label(secondColumn, SWT.NONE);
       email.setText(account.getEmail());  // email is never null.
       email.setData(CSS_CLASS_NAME_KEY, "email");
 
-      Label separator = new Label(container, SWT.HORIZONTAL | SWT.SEPARATOR);
+      Label separator = new Label(accountArea, SWT.HORIZONTAL | SWT.SEPARATOR);
       separator.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
-      Point nameSize = name.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-      int avatarHeight = nameSize.y * 3;
-
-      GridData gridData = new GridData();
-      gridData.heightHint = avatarHeight;
-      gridData.widthHint = avatarHeight;
-      avatar.setLayoutData(gridData);
+      // <Avatar length & height> = 3 * <email label height>
+      Point emailSize = email.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+      int avatarHeight = emailSize.y * 3;
+      GridDataFactory.swtDefaults().hint(avatarHeight, avatarHeight).applyTo(avatar);
 
       try {
         AsyncImageLoader.loadImage(account.getAvatarUrl(), avatar, avatarHeight, avatarHeight);
       } catch (MalformedURLException ex) {
-        logger.log(Level.WARNING, "malformed image url", ex);
+        logger.log(Level.WARNING, "malformed avatar image url", ex);
       }
+
+      GridLayoutFactory.fillDefaults().numColumns(2).applyTo(accountRow);
+      GridLayoutFactory.fillDefaults().generateLayout(secondColumn);
     }
   }
 
