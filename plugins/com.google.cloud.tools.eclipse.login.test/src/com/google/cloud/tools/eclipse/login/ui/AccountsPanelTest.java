@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -63,7 +62,7 @@ public class AccountsPanelTest {
     when(account3.getName()).thenReturn("Charlie");
   }
 
-  @Test(expected = WidgetNotFoundException.class)
+  @Test
   public void testLogOutButton_notLoggedIn() {
     setUpLoginService();
 
@@ -72,7 +71,7 @@ public class AccountsPanelTest {
 
     List<String> buttonTexts = collectButtonTexts((Composite) control);
     assertEquals(1, buttonTexts.size());
-    assertEquals("Add Accounts...", buttonTexts.get(0));
+    assertEquals("Add Account...", buttonTexts.get(0));
   }
 
   @Test
@@ -84,7 +83,7 @@ public class AccountsPanelTest {
 
     List<String> buttonTexts = collectButtonTexts((Composite) control);
     assertEquals(2, buttonTexts.size());
-    assertTrue(buttonTexts.contains("Add Accounts..."));
+    assertTrue(buttonTexts.contains("Add Account..."));
     assertTrue(buttonTexts.contains("Sign Out..."));
   }
 
@@ -108,7 +107,7 @@ public class AccountsPanelTest {
 
     NamesEmails namesEmails = collectNamesEmails(control);
     assertEquals(1, namesEmails.emails.size());
-    assertEquals("bob@example.com", namesEmails.emails.get(0));
+    assertEquals("alice@example.com", namesEmails.emails.get(0));
     assertEquals("Alice", namesEmails.names.get(0));
   }
 
