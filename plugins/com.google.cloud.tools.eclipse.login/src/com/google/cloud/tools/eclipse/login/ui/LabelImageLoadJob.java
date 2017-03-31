@@ -16,7 +16,6 @@
 
 package com.google.cloud.tools.eclipse.login.ui;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -32,7 +31,7 @@ import org.eclipse.swt.widgets.Label;
 class LabelImageLoadJob extends Job {
 
   private final URL imageUrl;
-  private final Label placeholder;
+  private final Label label;
   private final int width;
   private final int height;
   private final Display display;
@@ -40,11 +39,10 @@ class LabelImageLoadJob extends Job {
   private boolean disposerAttached = false;
   private Image image;
 
-  LabelImageLoadJob(URL imageUrl, Label label, int width, int height)
-      throws MalformedURLException {
+  LabelImageLoadJob(URL imageUrl, Label label, int width, int height) {
     super("Google User Profile Picture Fetach Job");
     this.imageUrl = imageUrl;
-    this.placeholder = label;
+    this.label = label;
     this.width = width;
     this.height = height;
     display = label.getDisplay();
@@ -78,12 +76,12 @@ class LabelImageLoadJob extends Job {
 
     @Override
     public void run() {
-      if (placeholder.isDisposed()) {
+      if (label.isDisposed()) {
         image.dispose();
       } else {
-        placeholder.addDisposeListener(new ImageDisposer(image));
+        label.addDisposeListener(new ImageDisposer(image));
         disposerAttached = true;
-        placeholder.setImage(image);
+        label.setImage(image);
       }
     }
   }

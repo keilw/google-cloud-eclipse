@@ -87,7 +87,7 @@ public class LabelImageLoaderTest {
     LabelImageLoader.storeInCache("http://example.com", someImageData);
 
     imageLoader.loadImage("http://example.com", label, 1, 1);
-    assertNull(imageLoader.fetchJob);
+    assertNull(imageLoader.loadJob);
     assertNotNull(label.getImage());
   }
 }

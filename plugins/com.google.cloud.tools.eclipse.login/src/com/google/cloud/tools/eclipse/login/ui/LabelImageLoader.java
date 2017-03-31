@@ -33,7 +33,7 @@ class LabelImageLoader {
   final static ConcurrentHashMap<String, ImageData> cache = new ConcurrentHashMap<>();
 
   @VisibleForTesting
-  Job fetchJob;
+  Job loadJob;
 
   /**
    * Loads an image to {@link Label}. The images will be fetched from {@code imageUrl}
@@ -51,8 +51,8 @@ class LabelImageLoader {
       label.addDisposeListener(new ImageDisposer(image));
       label.setImage(image);
     } else {
-      fetchJob = new LabelImageLoadJob(new URL(imageUrl), label, width, height);
-      fetchJob.schedule();
+      loadJob = new LabelImageLoadJob(new URL(imageUrl), label, width, height);
+      loadJob.schedule();
     }
   }
 

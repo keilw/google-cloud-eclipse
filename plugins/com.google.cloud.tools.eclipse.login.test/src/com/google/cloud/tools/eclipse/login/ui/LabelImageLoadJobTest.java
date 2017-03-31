@@ -17,12 +17,11 @@
 package com.google.cloud.tools.eclipse.login.ui;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.tools.eclipse.test.util.http.TestHttpServer;
 import com.google.cloud.tools.eclipse.test.util.ui.ShellTestResource;
-import java.net.MalformedURLException;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Label;
@@ -31,14 +30,13 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class LabelImageLoaderWithServerTest {
+public class LabelImageLoadJobTest {
 
   @Rule public ShellTestResource shellResource = new ShellTestResource();
   @Rule public TestHttpServer server = new TestHttpServer(
       "sample.gif", LabelImageLoaderTest.someImageBytes);
 
-  private final LabelImageLoader imageLoader = new LabelImageLoader();
-
+  private Job loadJob;
   private Label label;
 
   @Before
@@ -48,6 +46,8 @@ public class LabelImageLoaderWithServerTest {
 
   @After
   public void tearDown() {
+    assertEquals(Job.NONE, loadJob.getState());
+
     Image image = label.getImage();
     label.dispose();
     if (image != null) {
@@ -58,20 +58,7 @@ public class LabelImageLoaderWithServerTest {
   }
 
   @Test
-  public void testLoadImage_loadImageAsync() throws MalformedURLException, InterruptedException {
-    imageLoader.loadImage(server.getAddress() + "sample.gif", label, 1, 1);
-    assertNotNull(imageLoader.loadJob);
-    imageLoader.loadJob.join();
-
-    assertNotNull(label.getImage());
-  }
-
-  @Test
-  public void testLoadImage_imageResized() throws MalformedURLException, InterruptedException {
-    imageLoader.loadImage(server.getAddress() + "sample.gif", label, 123, 987);
-    imageLoader.loadJob.join();
-
-    assertEquals(123, label.getImage().getBounds().width);
-    assertEquals(987, label.getImage().getBounds().height);
+  public void test() {
+    loadJob = new LabelImageLoadJob(server.getAddress() + "sample.gif");
   }
 }
