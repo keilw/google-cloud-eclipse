@@ -17,10 +17,13 @@
 package com.google.cloud.tools.eclipse.login.ui;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.tools.eclipse.test.util.http.TestHttpServer;
 import com.google.cloud.tools.eclipse.test.util.ui.ShellTestResource;
+import java.net.MalformedURLException;
+import java.net.URL;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -36,7 +39,7 @@ public class LabelImageLoadJobTest {
   @Rule public TestHttpServer server = new TestHttpServer(
       "sample.gif", LabelImageLoaderTest.someImageBytes);
 
-  private Job loadJob;
+  private LabelImageLoadJob loadJob;
   private Label label;
 
   @Before
@@ -48,17 +51,60 @@ public class LabelImageLoadJobTest {
   public void tearDown() {
     assertEquals(Job.NONE, loadJob.getState());
 
-    Image image = label.getImage();
-    label.dispose();
-    if (image != null) {
-      assertTrue(image.isDisposed());
+    if (!label.isDisposed()) {
+      Image image = label.getImage();
+      label.dispose();
+      if (image != null) {
+        assertTrue(image.isDisposed());
+      }
     }
 
     LabelImageLoader.cache.clear();
   }
 
   @Test
-  public void test() {
-    loadJob = new LabelImageLoadJob(server.getAddress() + "sample.gif");
+  public void testRun_imageStoredInCache() throws MalformedURLException, InterruptedException {
+    assertTrue(LabelImageLoader.cache.isEmpty());
+
+    URL url = new URL(server.getAddress() + "sample.gif");
+    loadJob = new LabelImageLoadJob(url, label, 10, 10);
+    loadJob.schedule();
+    loadJob.join();
+
+    assertNotNull(LabelImageLoader.cache.get(url.toString()));
+  }
+
+  @Test
+  public void testRun_imageLoaded() throws MalformedURLException, InterruptedException {
+    URL url = new URL(server.getAddress() + "sample.gif");
+    loadJob = new LabelImageLoadJob(url, label, 10, 10);
+    loadJob.schedule();
+    loadJob.join();
+
+    assertNotNull(label.getImage());
+  }
+
+  @Test
+  public void testRun_imageResized() throws MalformedURLException, InterruptedException {
+    URL url = new URL(server.getAddress() + "sample.gif");
+    loadJob = new LabelImageLoadJob(url, label, 234, 56);
+    loadJob.schedule();
+    loadJob.join();
+
+    assertEquals(234, label.getImage().getBounds().width);
+    assertEquals(56, label.getImage().getBounds().height);
+  }
+
+  @Test
+  public void testRun_noErrorIfLabelAlreadyDisposed()
+      throws MalformedURLException, InterruptedException {
+    URL url = new URL(server.getAddress() + "sample.gif");
+    loadJob = new LabelImageLoadJob(url, label, 234, 56);
+
+    label.dispose();
+    loadJob.schedule();
+    loadJob.join();
+
+    assertTrue(loadJob.scaled.isDisposed());
   }
 }

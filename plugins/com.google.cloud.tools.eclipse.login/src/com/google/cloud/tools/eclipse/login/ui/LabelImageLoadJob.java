@@ -16,6 +16,7 @@
 
 package com.google.cloud.tools.eclipse.login.ui;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.net.URL;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -37,7 +38,9 @@ class LabelImageLoadJob extends Job {
   private final Display display;
 
   private boolean disposerAttached = false;
-  private Image image;
+
+  @VisibleForTesting
+  Image scaled;
 
   LabelImageLoadJob(URL imageUrl, Label label, int width, int height) {
     super("Google User Profile Picture Fetach Job");
@@ -57,16 +60,16 @@ class LabelImageLoadJob extends Job {
     }
 
     try {
-      ImageData imageData = unscaled.getImageData().scaledTo(width, height);
-      LabelImageLoader.storeInCache(imageUrl.toString(), imageData);
+      ImageData scaledData = unscaled.getImageData().scaledTo(width, height);
+      LabelImageLoader.storeInCache(imageUrl.toString(), scaledData);
 
-      image = new Image(display, imageData);
+      scaled = new Image(display, scaledData);
       display.syncExec(new UiRunnable());
 
     } finally {
       unscaled.dispose();
-      if (image != null && !disposerAttached) {
-        image.dispose();
+      if (scaled != null && !disposerAttached) {
+        scaled.dispose();
       }
     }
     return Status.OK_STATUS;
@@ -76,12 +79,10 @@ class LabelImageLoadJob extends Job {
 
     @Override
     public void run() {
-      if (label.isDisposed()) {
-        image.dispose();
-      } else {
-        label.addDisposeListener(new ImageDisposer(image));
+      if (!label.isDisposed()) {
+        label.addDisposeListener(new ImageDisposer(scaled));
         disposerAttached = true;
-        label.setImage(image);
+        label.setImage(scaled);
       }
     }
   }
