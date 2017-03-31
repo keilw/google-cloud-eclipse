@@ -104,10 +104,12 @@ public class AccountsPanel extends PopupDialog {
       email.setText(account.getEmail());  // email is never null.
       separator.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
-      try {
-        AsyncImageLoader.loadImage(account.getAvatarUrl(), avatar, avatarHeight, avatarHeight);
-      } catch (MalformedURLException ex) {
-        logger.log(Level.WARNING, "malformed avatar image url", ex);
+      if (account.getAvatarUrl() != null) {
+        try {
+          AsyncImageLoader.loadImage(account.getAvatarUrl(), avatar, avatarHeight, avatarHeight);
+        } catch (MalformedURLException ex) {
+          logger.log(Level.WARNING, "malformed avatar image url", ex);
+        }
       }
     }
   }

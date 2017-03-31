@@ -16,6 +16,7 @@
 
 package com.google.cloud.tools.eclipse.login.ui;
 
+import com.google.common.base.Preconditions;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,12 +27,13 @@ import org.eclipse.swt.widgets.Label;
 
 class AsyncImageLoader {
 
-  final static ConcurrentHashMap<String, ImageData> cache = new ConcurrentHashMap<>();
+  private final static ConcurrentHashMap<String, ImageData> cache = new ConcurrentHashMap<>();
 
-  /** Must be called in the UI context.
-   * @throws MalformedURLException */
+  /** Must be called in the UI context. */
   static void loadImage(String imageUrl, Label placeholder, int width, int height)
       throws MalformedURLException {
+    Preconditions.checkNotNull(imageUrl);
+
     ImageData imageData = cache.get(imageUrl);
     if (imageData != null) {
       Image image = new Image(placeholder.getDisplay(), imageData);

@@ -60,6 +60,9 @@ public class AccountsPanelTest {
     when(account1.getName()).thenReturn("Alice");
     when(account2.getName()).thenReturn(null);
     when(account3.getName()).thenReturn("Charlie");
+    //when(account1.getAvatarUrl()).thenReturn(null);
+    //when(account2.getAvatarUrl()).thenReturn("http://example.com/bob");
+    //when(account3.getAvatarUrl()).thenReturn("http://example.com/charlie");
   }
 
   @Test
@@ -170,11 +173,15 @@ public class AccountsPanelTest {
   private static NamesEmails collectNamesEmails(Control dialogArea) {
     NamesEmails namesEmails = new NamesEmails();
 
-    Control controls[] = ((Composite) dialogArea).getChildren();
-    for (int i = 0; i + 3 < controls.length; i += 3) {
-      namesEmails.names.add(((Label) controls[i]).getText());
-      namesEmails.emails.add(((Label) controls[i+1]).getText());
-      assertEquals(SWT.SEPARATOR, ((Label) controls[i+2]).getStyle() & SWT.SEPARATOR);
+    Control[] controls = ((Composite) dialogArea).getChildren();
+    for (int i = 0; i + 2 < controls.length; i += 2) {
+      Composite accountRow = (Composite) controls[i];
+      Composite secondColumn = (Composite) accountRow.getChildren()[1];
+      Control[] labels = secondColumn.getChildren();
+      namesEmails.names.add(((Label) labels[0]).getText());
+      namesEmails.emails.add(((Label) labels[1]).getText());
+
+      assertEquals(SWT.SEPARATOR, ((Label) controls[i+1]).getStyle() & SWT.SEPARATOR);
     }
     return namesEmails;
   }
