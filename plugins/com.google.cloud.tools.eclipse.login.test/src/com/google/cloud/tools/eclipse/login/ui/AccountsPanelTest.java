@@ -50,6 +50,7 @@ public class AccountsPanelTest {
   @Mock private Account account1;
   @Mock private Account account2;
   @Mock private Account account3;
+  @Mock private LabelImageLoader imageLoader;
 
   @Before
   public void setUp() {
@@ -60,16 +61,13 @@ public class AccountsPanelTest {
     when(account1.getName()).thenReturn("Alice");
     when(account2.getName()).thenReturn(null);
     when(account3.getName()).thenReturn("Charlie");
-    //when(account1.getAvatarUrl()).thenReturn(null);
-    //when(account2.getAvatarUrl()).thenReturn("http://example.com/bob");
-    //when(account3.getAvatarUrl()).thenReturn("http://example.com/charlie");
   }
 
   @Test
   public void testLogOutButton_notLoggedIn() {
     setUpLoginService();
 
-    AccountsPanel panel = new AccountsPanel(null, loginService);
+    AccountsPanel panel = new AccountsPanel(null, loginService, imageLoader);
     Control control = panel.createDialogArea(shell);
 
     List<String> buttonTexts = collectButtonTexts((Composite) control);
@@ -81,7 +79,7 @@ public class AccountsPanelTest {
   public void testLogOutButton_loggedIn() {
     setUpLoginService(Arrays.asList(account1));
 
-    AccountsPanel panel = new AccountsPanel(null, loginService);
+    AccountsPanel panel = new AccountsPanel(null, loginService, imageLoader);
     Control control = panel.createDialogArea(shell);
 
     List<String> buttonTexts = collectButtonTexts((Composite) control);
@@ -94,7 +92,7 @@ public class AccountsPanelTest {
   public void testAccountsArea_zeroAccounts() {
     setUpLoginService();
 
-    AccountsPanel panel = new AccountsPanel(null, loginService);
+    AccountsPanel panel = new AccountsPanel(null, loginService, imageLoader);
     Control control = panel.createDialogArea(shell);
 
     NamesEmails namesEmails = collectNamesEmails(control);
@@ -105,7 +103,7 @@ public class AccountsPanelTest {
   public void testAccountsArea_oneAccount() {
     setUpLoginService(Arrays.asList(account1));
 
-    AccountsPanel panel = new AccountsPanel(null, loginService);
+    AccountsPanel panel = new AccountsPanel(null, loginService, imageLoader);
     Control control = panel.createDialogArea(shell);
 
     NamesEmails namesEmails = collectNamesEmails(control);
@@ -118,7 +116,7 @@ public class AccountsPanelTest {
   public void testAccountsArea_accountWithNullName() {
     setUpLoginService(Arrays.asList(account2));
 
-    AccountsPanel panel = new AccountsPanel(null, loginService);
+    AccountsPanel panel = new AccountsPanel(null, loginService, imageLoader);
     Control control = panel.createDialogArea(shell);
 
     NamesEmails namesEmails = collectNamesEmails(control);
@@ -131,7 +129,7 @@ public class AccountsPanelTest {
   public void testAccountsArea_threeAccounts() {
     setUpLoginService(Arrays.asList(account1, account2, account3));
 
-    AccountsPanel panel = new AccountsPanel(null, loginService);
+    AccountsPanel panel = new AccountsPanel(null, loginService, imageLoader);
     Control control = panel.createDialogArea(shell);
 
     NamesEmails namesEmails = collectNamesEmails(control);
