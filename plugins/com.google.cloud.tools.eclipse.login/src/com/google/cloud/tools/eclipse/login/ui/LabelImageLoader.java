@@ -16,31 +16,43 @@
 
 package com.google.cloud.tools.eclipse.login.ui;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.internal.ui.viewsupport.ImageDisposer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Label;
 
-class AsyncImageLoader {
+class LabelImageLoader {
 
-  private final static ConcurrentHashMap<String, ImageData> cache = new ConcurrentHashMap<>();
+  @VisibleForTesting
+  final static ConcurrentHashMap<String, ImageData> cache = new ConcurrentHashMap<>();
 
-  /** Must be called in the UI context. */
-  static void loadImage(String imageUrl, Label placeholder, int width, int height)
+  @VisibleForTesting
+  Job fetchJob;
+
+  /**
+   * Loads an image to {@link Label}. The images will be fetched from {@code imageUrl}
+   * asynchronously if not previously cached.
+   *
+   * Must be called in the UI context.
+   */
+  void loadImage(String imageUrl, Label label, int width, int height)
       throws MalformedURLException {
     Preconditions.checkNotNull(imageUrl);
 
     ImageData imageData = cache.get(imageUrl);
     if (imageData != null) {
-      Image image = new Image(placeholder.getDisplay(), imageData);
-      placeholder.addDisposeListener(new ImageDisposer(image));
-      placeholder.setImage(image);
+      Image image = new Image(label.getDisplay(), imageData);
+      label.addDisposeListener(new ImageDisposer(image));
+      label.setImage(image);
     } else {
-      new AsyncImageLoadJob(new URL(imageUrl), placeholder, width, height).schedule();
+      fetchJob = new LabelImageLoadJob(new URL(imageUrl), label, width, height);
+      fetchJob.schedule();
     }
   }
 

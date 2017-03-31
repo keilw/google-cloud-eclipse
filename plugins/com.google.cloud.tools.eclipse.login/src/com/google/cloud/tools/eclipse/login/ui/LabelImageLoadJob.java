@@ -29,7 +29,7 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
-class AsyncImageLoadJob extends Job {
+class LabelImageLoadJob extends Job {
 
   private final URL imageUrl;
   private final Label placeholder;
@@ -40,7 +40,7 @@ class AsyncImageLoadJob extends Job {
   private boolean disposerAttached = false;
   private Image image;
 
-  AsyncImageLoadJob(URL imageUrl, Label label, int width, int height)
+  LabelImageLoadJob(URL imageUrl, Label label, int width, int height)
       throws MalformedURLException {
     super("Google User Profile Picture Fetach Job");
     this.imageUrl = imageUrl;
@@ -60,7 +60,7 @@ class AsyncImageLoadJob extends Job {
 
     try {
       ImageData imageData = unscaled.getImageData().scaledTo(width, height);
-      AsyncImageLoader.storeInCache(imageUrl.toString(), imageData);
+      LabelImageLoader.storeInCache(imageUrl.toString(), imageData);
 
       image = new Image(display, imageData);
       display.syncExec(new UiRunnable());

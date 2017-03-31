@@ -48,8 +48,14 @@ public class AccountsPanel extends PopupDialog {
   private static final Logger logger = Logger.getLogger(AccountsPanel.class.getName());
 
   private final IGoogleLoginService loginService;
+  private final LabelImageLoader imageLoader;
 
   public AccountsPanel(Shell parent, IGoogleLoginService loginService) {
+    this(parent, loginService, new LabelImageLoader());
+  }
+
+  @VisibleForTesting
+  AccountsPanel(Shell parent, IGoogleLoginService loginService, LabelImageLoader imageLoader) {
     super(parent, SWT.MODELESS,
         true /* takeFocusOnOpen */,
         false /* persistSize */,
@@ -58,7 +64,9 @@ public class AccountsPanel extends PopupDialog {
         false /* showPersistActions */,
         null /* no title area */, null /* no info text area */);
     this.loginService = loginService;
+    this.imageLoader = imageLoader;
   }
+
 
   @Override
   protected Color getBackground() {
@@ -106,7 +114,7 @@ public class AccountsPanel extends PopupDialog {
 
       if (account.getAvatarUrl() != null) {
         try {
-          AsyncImageLoader.loadImage(account.getAvatarUrl(), avatar, avatarHeight, avatarHeight);
+          imageLoader.loadImage(account.getAvatarUrl(), avatar, avatarHeight, avatarHeight);
         } catch (MalformedURLException ex) {
           logger.log(Level.WARNING, "malformed avatar image url", ex);
         }
