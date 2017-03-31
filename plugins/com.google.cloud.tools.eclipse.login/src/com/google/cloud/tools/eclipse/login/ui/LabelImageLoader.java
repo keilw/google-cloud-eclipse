@@ -27,7 +27,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Label;
 
-class LabelImageLoader {
+@VisibleForTesting
+public class LabelImageLoader {
 
   @VisibleForTesting
   final static ConcurrentHashMap<String, ImageData> cache = new ConcurrentHashMap<>();
