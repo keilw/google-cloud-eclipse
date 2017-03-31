@@ -97,6 +97,7 @@ public class AccountsPanel extends PopupDialog {
       Label name = new Label(secondColumn, SWT.LEAD);
       Label email = new Label(secondColumn, SWT.LEAD);
       Label separator = new Label(accountArea, SWT.HORIZONTAL | SWT.SEPARATOR);
+      separator.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
       // <Avatar length & height> = 3 * <email label height>
       Point emailSize = email.computeSize(SWT.DEFAULT, SWT.DEFAULT);
@@ -110,7 +111,6 @@ public class AccountsPanel extends PopupDialog {
         name.setText(account.getName());
       }
       email.setText(account.getEmail());  // email is never null.
-      separator.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
       if (account.getAvatarUrl() != null) {
         try {
