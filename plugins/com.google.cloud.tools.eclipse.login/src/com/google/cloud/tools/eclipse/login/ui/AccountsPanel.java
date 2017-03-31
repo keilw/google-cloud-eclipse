@@ -47,9 +47,6 @@ public class AccountsPanel extends PopupDialog {
 
   private static final Logger logger = Logger.getLogger(AccountsPanel.class.getName());
 
-  @VisibleForTesting
-  static final String CSS_CLASS_NAME_KEY = "org.eclipse.e4.ui.css.CssClassName";
-
   private final IGoogleLoginService loginService;
 
   public AccountsPanel(Shell parent, IGoogleLoginService loginService) {
@@ -87,38 +84,31 @@ public class AccountsPanel extends PopupDialog {
   void createAccountsPane(Composite accountArea) {
     for (Account account : loginService.getAccounts()) {
       Composite accountRow = new Composite(accountArea, SWT.NONE);
-
       Label avatar = new Label(accountRow, SWT.NONE);
-      avatar.setData(CSS_CLASS_NAME_KEY, "avatar");
-
       Composite secondColumn = new Composite(accountRow, SWT.NONE);
-
-      Label name = new Label(secondColumn, SWT.NONE);
-      if (account.getName() != null) {
-        name.setText(account.getName());
-      }
-      name.setData(CSS_CLASS_NAME_KEY, "accountName");
-
-      Label email = new Label(secondColumn, SWT.NONE);
-      email.setText(account.getEmail());  // email is never null.
-      email.setData(CSS_CLASS_NAME_KEY, "email");
-
+      Label name = new Label(secondColumn, SWT.LEAD);
+      Label email = new Label(secondColumn, SWT.LEAD);
       Label separator = new Label(accountArea, SWT.HORIZONTAL | SWT.SEPARATOR);
-      separator.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
       // <Avatar length & height> = 3 * <email label height>
       Point emailSize = email.computeSize(SWT.DEFAULT, SWT.DEFAULT);
       int avatarHeight = emailSize.y * 3;
+
       GridDataFactory.swtDefaults().hint(avatarHeight, avatarHeight).applyTo(avatar);
+      GridLayoutFactory.fillDefaults().numColumns(2).applyTo(accountRow);
+      GridLayoutFactory.fillDefaults().generateLayout(secondColumn);
+
+      if (account.getName() != null) {
+        name.setText(account.getName());
+      }
+      email.setText(account.getEmail());  // email is never null.
+      separator.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
       try {
         AsyncImageLoader.loadImage(account.getAvatarUrl(), avatar, avatarHeight, avatarHeight);
       } catch (MalformedURLException ex) {
         logger.log(Level.WARNING, "malformed avatar image url", ex);
       }
-
-      GridLayoutFactory.fillDefaults().numColumns(2).applyTo(accountRow);
-      GridLayoutFactory.fillDefaults().generateLayout(secondColumn);
     }
   }
 
@@ -135,7 +125,6 @@ public class AccountsPanel extends PopupDialog {
       Button logOutButton = new Button(buttonArea, SWT.FLAT);
       logOutButton.setText(Messages.getString("BUTTON_ACCOUNTS_PANEL_LOGOUT"));
       logOutButton.addSelectionListener(new LogOutOnClick());
-      logOutButton.setData(CSS_CLASS_NAME_KEY, "logOutButton");
       GridDataFactory.defaultsFor(logOutButton).applyTo(logOutButton);
     }
   }
