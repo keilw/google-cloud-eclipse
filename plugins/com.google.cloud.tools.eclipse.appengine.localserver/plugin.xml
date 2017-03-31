@@ -8,6 +8,7 @@
             description="%runtimeTypeDescription"
             id="com.google.cloud.tools.eclipse.appengine.standard.runtime"
             name="%apptoolsRuntimeTypeName"
+            supportsManualCreation="false"
             vendor="%runtimeTypeVendor"
             version="1">
          <moduleType

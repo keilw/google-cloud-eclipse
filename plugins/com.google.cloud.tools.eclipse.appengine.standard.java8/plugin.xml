@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.wst.server.core.runtimeTypes">
+      <runtimeType
+            id="com.google.cloud.tools.eclipse.appengine.standard.runtime"
+            name="%appengineJava8RuntimeTypeName"
+            description="%appengineJava8RuntimeDescription"
+            supportsManualCreation="false"
+            class="com.google.cloud.tools.eclipse.appengine.localserver.server.AppToolsRuntime"
+            vendor="%appengineJava8RuntimeTypeVendor"
+            version="Java8">
+         <moduleType
+               types="jst.web"
+               versions="2.5">
+         </moduleType>
+         <moduleType
+               types="java"
+               versions="[1.7,1.8]">
+         </moduleType>
+      </runtimeType>
+   </extension>
+
+   <extension
+         point="org.eclipse.wst.common.project.facet.core.groups">
+      <members
+            group="com.google.cloud.tools.eclipse.appengine.facets.standard.constraints.servlet">
+      </members>
+      <members
+            group="com.google.cloud.tools.eclipse.appengine.facets.standard.constraints.jre">
+         <include
+               facet="java"
+               versions="1.8">
+         </include>
+      </members>
+   </extension>
+
+   <extension
+         point="org.eclipse.wst.common.project.facet.core.runtimes">
+      <runtime-component-version
+            type="com.google.cloud.tools.eclipse.appengine.standard.runtime"
+            version="java8">
+      </runtime-component-version>
+      <supported>
+         <runtime-component
+               id="com.google.cloud.tools.eclipse.appengine.standard.runtime"
+               version="java8"></runtime-component>
+         <facet
+               id="com.google.cloud.tools.eclipse.appengine.facets.standard"
+               version="1">
+         </facet>
+         <facet
+               id="jst.web"
+               version="2.5">
+         </facet>
+         <facet
+               id="java"
+               version="[1.7,1.8]">
+         </facet>
+      </supported>
+	</extension>
+</plugin>
