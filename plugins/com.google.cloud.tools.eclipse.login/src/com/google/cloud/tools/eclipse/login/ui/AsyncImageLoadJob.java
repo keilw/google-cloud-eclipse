@@ -22,50 +22,54 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jdt.internal.ui.viewsupport.ImageDisposer;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
-class AsyncImageSetterJob extends Job {
+class AsyncImageLoadJob extends Job {
 
   private final URL imageUrl;
   private final Label placeholder;
+  private final int width;
+  private final int height;
   private final Display display;
 
+  private boolean disposerAttached = false;
   private Image image;
 
-  AsyncImageSetterJob(String imageUrl, final Label placeholder, int width, int height)
+  AsyncImageLoadJob(URL imageUrl, Label label, int width, int height)
       throws MalformedURLException {
     super("Google User Profile Picture Fetach Job");
-    this.imageUrl = new URL(imageUrl);
-    this.placeholder = placeholder;
-    display = placeholder.getDisplay();
-  }
-
-  private static Image resize(Display display, Image image) {
-    ImageData imageData = image.getImageData().scaledTo(50, 50);
-    Image scaled = new Image(display, imageData);
-    image.dispose();
-    return scaled;
+    this.imageUrl = imageUrl;
+    this.placeholder = label;
+    this.width = width;
+    this.height = height;
+    display = label.getDisplay();
   }
 
   @Override
   protected IStatus run(IProgressMonitor monitor) {
     ImageDescriptor descriptor = ImageDescriptor.createFromURL(imageUrl);
-    image = descriptor.createImage();
-    if (image == null) {
+    Image unscaled = descriptor.createImage();
+    if (unscaled == null) {  // extreme cases; return normally.
       return Status.OK_STATUS;
     }
-    image = resize(display, image);
 
     try {
+      ImageData imageData = unscaled.getImageData().scaledTo(width, height);
+      AsyncImageLoader.storeInCache(imageUrl.toString(), imageData);
+
+      image = new Image(display, imageData);
       display.syncExec(new UiRunnable());
-    } catch (Throwable throwable) {
-      image.dispose();
+
+    } finally {
+      unscaled.dispose();
+      if (image != null && !disposerAttached) {
+        image.dispose();
+      }
     }
     return Status.OK_STATUS;
   }
@@ -77,13 +81,9 @@ class AsyncImageSetterJob extends Job {
       if (placeholder.isDisposed()) {
         image.dispose();
       } else {
+        placeholder.addDisposeListener(new ImageDisposer(image));
+        disposerAttached = true;
         placeholder.setImage(image);
-        placeholder.addDisposeListener(new DisposeListener() {
-          @Override
-          public void widgetDisposed(DisposeEvent event) {
-            image.dispose();
-          }
-        });
       }
     }
   }

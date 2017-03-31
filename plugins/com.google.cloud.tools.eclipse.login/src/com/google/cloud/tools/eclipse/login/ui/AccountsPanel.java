@@ -87,8 +87,8 @@ public class AccountsPanel extends PopupDialog {
   void createAccountsPane(Composite container) {
 
     for (Account account : loginService.getAccounts()) {
-      Label avatarPlaceholder = new Label(container, SWT.NONE);
-      avatarPlaceholder.setData(CSS_CLASS_NAME_KEY, "avatar");
+      Label avatar = new Label(container, SWT.NONE);
+      avatar.setData(CSS_CLASS_NAME_KEY, "avatar");
 
       Label name = new Label(container, SWT.LEAD);
       if (account.getName() != null) {
@@ -109,11 +109,10 @@ public class AccountsPanel extends PopupDialog {
       GridData gridData = new GridData();
       gridData.heightHint = avatarHeight;
       gridData.widthHint = avatarHeight;
-      avatarPlaceholder.setLayoutData(gridData);
+      avatar.setLayoutData(gridData);
 
       try {
-        new AsyncImageSetterJob(account.getAvatarUrl(), avatarPlaceholder,
-            avatarHeight, avatarHeight).schedule();
+        AsyncImageLoader.loadImage(account.getAvatarUrl(), avatar, avatarHeight, avatarHeight);
       } catch (MalformedURLException ex) {
         logger.log(Level.WARNING, "malformed image url", ex);
       }
