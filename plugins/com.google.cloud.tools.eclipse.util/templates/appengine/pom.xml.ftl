@@ -3,20 +3,21 @@
 
   <modelVersion>4.0.0</modelVersion>
   <packaging>war</packaging>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>${version}</version>
 
   <groupId>${groupId}</groupId>
   <artifactId>${artifactId}</artifactId>
 
   <properties>
-    <appengine.version>1.9.48</appengine.version>
-    <appengine.maven.plugin.version>1.0.0</appengine.maven.plugin.version>
+    <appengine.version>1.9.51</appengine.version>
+    <appengine.maven.plugin.version>1.2.1</appengine.maven.plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
     <archiveClasses>true</archiveClasses>
+    <failOnMissingWebXml>false<failOnMissingWebXml>
   </properties>
 
   <prerequisites>
@@ -32,8 +33,8 @@
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -124,6 +125,8 @@
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
         <version>${r"${appengine.maven.plugin.version}"}</version>
+        <configuration>
+        </configuration>
       </plugin>
     </plugins>
   </build>
