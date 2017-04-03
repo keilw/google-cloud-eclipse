@@ -101,7 +101,7 @@ public class CodeTemplates {
     }
 
     IFolder packageFolder = createFoldersForPackage(java, packageName, subMonitor.newChild(5));
-    IFile hello = createChildFile(Messages.getString("CodeTemplates.3"), //$NON-NLS-1$
+    IFile hello = createChildFile("HelloAppEngine.java", //$NON-NLS-1$
         AppEngineTemplateUtility.HELLO_APPENGINE_TEMPLATE,
         packageFolder, templateValues, subMonitor.newChild(5));
 
