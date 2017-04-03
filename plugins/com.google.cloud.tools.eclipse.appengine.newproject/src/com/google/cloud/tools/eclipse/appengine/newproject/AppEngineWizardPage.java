@@ -18,6 +18,7 @@ package com.google.cloud.tools.eclipse.appengine.newproject;
 
 import com.google.cloud.tools.eclipse.appengine.libraries.model.CloudLibraries;
 import com.google.cloud.tools.eclipse.appengine.libraries.model.Library;
+import com.google.cloud.tools.eclipse.appengine.newproject.AppEngineProjectConfig.BuildTool;
 import com.google.cloud.tools.eclipse.appengine.ui.AppEngineImages;
 import com.google.cloud.tools.eclipse.appengine.ui.LibrarySelectorGroup;
 import java.io.File;
@@ -163,7 +164,7 @@ public abstract class AppEngineWizardPage extends WizardNewProjectCreationPage {
 
   public Collection<Library> getSelectedLibraries() {
     if (appEngineLibrariesSelectorGroup == null) {
-      return new HashSet<Library>();
+      return new HashSet<>();
     } else {
       return appEngineLibrariesSelectorGroup.getSelectedLibraries();
     }
@@ -179,5 +180,9 @@ public abstract class AppEngineWizardPage extends WizardNewProjectCreationPage {
 
   public String getServiceName() {
     return serviceNameField.getText();
+  }
+
+  public BuildTool getBuildTool() {
+    return BuildTool.NONE;
   }
 }

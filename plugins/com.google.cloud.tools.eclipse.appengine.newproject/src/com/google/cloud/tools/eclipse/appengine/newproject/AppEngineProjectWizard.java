@@ -94,6 +94,7 @@ public abstract class AppEngineProjectWizard extends Wizard implements INewWizar
     config.setServiceName(page.getServiceName());
     config.setPackageName(page.getPackageName());
     config.setProject(page.getProjectHandle());
+    config.setBuildTool(page.getBuildTool());
     if (!page.useDefaults()) {
       config.setEclipseProjectLocationUri(page.getLocationURI());
     }
@@ -102,18 +103,20 @@ public abstract class AppEngineProjectWizard extends Wizard implements INewWizar
 
     // todo set up
     IAdaptable uiInfoAdapter = WorkspaceUndoUtil.getUIInfoAdapter(getShell());
-    CreateAppEngineWtpProject runnable = getAppEngineProjectCreationOperation(config, uiInfoAdapter);
+    CreateAppEngineWtpProject runnable =
+        getAppEngineProjectCreationOperation(config, uiInfoAdapter);
 
     try {
       getContainer().run(fork, cancelable, runnable);
-      
+
       // open most important file created by wizard in editor
       IFile file = runnable.getMostImportant();
       WorkbenchUtil.openInEditor(workbench, file);
     } catch (InterruptedException ex) {
       status = Status.CANCEL_STATUS;
     } catch (InvocationTargetException ex) {
-      status = StatusUtil.setErrorStatus(this, Messages.getString("project.creation.failed"), ex.getCause());
+      String message = Messages.getString("project.creation.failed");
+      status = StatusUtil.setErrorStatus(this, message, ex.getCause());
     }
 
     return status.isOK();

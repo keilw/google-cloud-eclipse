@@ -16,13 +16,23 @@
 
 package com.google.cloud.tools.eclipse.appengine.newproject.flex;
 
+import com.google.cloud.tools.eclipse.appengine.newproject.AppEngineProjectConfig.BuildTool;
 import com.google.cloud.tools.eclipse.appengine.newproject.AppEngineWizardPage;
 import com.google.cloud.tools.eclipse.appengine.newproject.Messages;
+import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
 public class AppEngineFlexWizardPage extends AppEngineWizardPage {
+
+  // TODO(chanseok): remove archetype-based creation for Standard too, and push the field,
+  // "createControl()", and "getBuildTool()" down to super class.
+  // https://github.com/GoogleCloudPlatform/google-cloud-eclipse/issues/1326
+  private Button asMavenProject;
+
   public AppEngineFlexWizardPage() {
     super(false);
     setTitle(Messages.getString("app.engine.flex.project")); //$NON-NLS-1$
@@ -40,4 +50,23 @@ public class AppEngineFlexWizardPage extends AppEngineWizardPage {
         "com.google.cloud.tools.eclipse.appengine.newproject.NewFlexProjectContext"); //$NON-NLS-1$
   }
 
+  @Override
+  public void createControl(Composite parent) {
+    super.createControl(parent);
+
+    Composite container = (Composite) getControl();
+    Composite composite = new Composite(container, SWT.NONE);
+    GridLayoutFactory.swtDefaults().numColumns(2).generateLayout(composite);
+
+    asMavenProject = new Button(composite, SWT.LEAD | SWT.CHECK);
+    asMavenProject.setText(Messages.getString("create.maven.project")); //$NON-NLS-1$
+  }
+
+  @Override
+  public BuildTool getBuildTool() {
+    if (asMavenProject.getSelection()) {
+      return BuildTool.MAVEN;
+    }
+    return BuildTool.NONE;
+  }
 }
