@@ -31,9 +31,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.maven.artifact.Artifact;
@@ -60,13 +58,15 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
  * Utility to create a new App Engine Flexible Eclipse project.
  */
 public class CreateAppEngineFlexWtpProject extends CreateAppEngineWtpProject {
-  private static final Logger logger = Logger.getLogger(CreateAppEngineFlexWtpProject.class.getName());
-  private static final Map<String, String> PROJECT_DEPENDENCIES;
+  private static final Logger logger =
+      Logger.getLogger(CreateAppEngineFlexWtpProject.class.getName());
+
+  private static final List<MavenCoordinates> PROJECT_DEPENDENCIES;
 
   static {
-    Map<String, String> projectDependencies = new HashMap<>();
-    projectDependencies.put("javax.servlet", "servlet-api");
-    PROJECT_DEPENDENCIES = Collections.unmodifiableMap(projectDependencies);
+    MavenCoordinates servletApi = new MavenCoordinates("javax.servlet", "javax.servlet-api"); //$NON-NLS-1$ //$NON-NLS-2$
+    servletApi.setVersion("3.1.0"); //$NON-NLS-1$
+    PROJECT_DEPENDENCIES = Collections.singletonList(servletApi);
   }
 
   private ILibraryRepositoryService repositoryService;
@@ -78,7 +78,8 @@ public class CreateAppEngineFlexWtpProject extends CreateAppEngineWtpProject {
   }
 
   @Override
-  public void addAppEngineFacet(IProject newProject, IProgressMonitor monitor) throws CoreException {
+  public void addAppEngineFacet(IProject newProject, IProgressMonitor monitor)
+      throws CoreException {
     // added in configureFacets along with facets sample requires
   }
 
@@ -121,32 +122,33 @@ public class CreateAppEngineFlexWtpProject extends CreateAppEngineWtpProject {
     SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
 
     // Create a lib folder
-    IFolder libFolder = project.getFolder("lib");
+    IFolder libFolder = project.getFolder("lib"); //$NON-NLS-1$
     if (!libFolder.exists()) {
       libFolder.create(true, true, subMonitor.newChild(10));
     }
 
     // Download the dependencies from maven
     int ticks = 50 / PROJECT_DEPENDENCIES.size();
-    for (Map.Entry<String, String> dependency : PROJECT_DEPENDENCIES.entrySet()) {
-      LibraryFile libraryFile = new LibraryFile(new MavenCoordinates(dependency.getKey(),
-          dependency.getValue()));
+    for (MavenCoordinates dependency : PROJECT_DEPENDENCIES) {
+      LibraryFile libraryFile = new LibraryFile(dependency);
       File artifactFile = null;
       try {
-        Artifact artifact = repositoryService.resolveArtifact(libraryFile, subMonitor.newChild(ticks));
+        Artifact artifact = repositoryService.resolveArtifact(
+            libraryFile, subMonitor.newChild(ticks));
         artifactFile = artifact.getFile();
         IFile destFile = libFolder.getFile(artifactFile.getName());
         destFile.create(new FileInputStream(artifactFile), true, subMonitor.newChild(30));
       } catch (CoreException ex) {
-        logger.log(Level.WARNING, "Error downloading " +
-            libraryFile.getMavenCoordinates().toString() + " from maven", ex);
+        logger.log(Level.WARNING, "Error downloading " + //$NON-NLS-1$
+            libraryFile.getMavenCoordinates().toString() + " from maven", ex); //$NON-NLS-1$
       } catch (FileNotFoundException ex) {
-        logger.log(Level.WARNING, "Error copying over " + artifactFile.toString() + " to " +
+        logger.log(Level.WARNING, "Error copying over " + artifactFile.toString() + " to " + //$NON-NLS-1$ //$NON-NLS-2$
             libFolder.getFullPath().toPortableString(), ex);
       }
     }
 
-    addDependenciesToClasspath(project, libFolder.getLocation().toString(), subMonitor.newChild(10));
+    addDependenciesToClasspath(project, libFolder.getLocation().toString(),
+        subMonitor.newChild(10));
   }
 
   private void addDependenciesToClasspath(IProject project, String libraryPath,

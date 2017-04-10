@@ -93,15 +93,6 @@ public class LocalAppEngineServerLaunchConfigurationDelegate
 
   private static final String DEBUGGER_HOST = "localhost"; //$NON-NLS-1$
 
-  /**
-   * Returns {@code value} unless it's null or empty, then returns {@code nullOrEmptyValue}.
-   *
-   * @see Strings#isNullOrEmpty(String)
-   */
-  private static String ifEmptyOrNull(String value, String nullOrEmptyValue) {
-    return !Strings.isNullOrEmpty(value) ? value : nullOrEmptyValue;
-  }
-
   private static int ifNull(Integer value, int nullValue) {
     return value != null ? value : nullValue;
   }
@@ -179,7 +170,6 @@ public class LocalAppEngineServerLaunchConfigurationDelegate
 
     // don't restart server when on-disk changes detected
     devServerRunConfiguration.setAutomaticRestart(false);
-
 
     int serverPort = getPortAttribute(LocalAppEngineServerBehaviour.SERVER_PORT_ATTRIBUTE_NAME,
         LocalAppEngineServerBehaviour.DEFAULT_SERVER_PORT, configuration, server);
@@ -314,8 +304,9 @@ public class LocalAppEngineServerLaunchConfigurationDelegate
     // XXX: does it matter if storage_path is same if all other paths are explicitly specified
     // (e.g., the {blob,data,*search*,logs} paths)
     if (Objects.equals(ours.getStoragePath(), theirs.getStoragePath())) {
-      status.add(StatusUtil.error(clazz, MessageFormat.format("storage path: {0}",
-          ifEmptyOrNull(ours.getStoragePath(), "<default location>"))));
+      String path =
+          ours.getStoragePath() == null ? "<default location>" : ours.getStoragePath().toString();
+      status.add(StatusUtil.error(clazz, "storage path: " + path));
     }
 
     return status;
@@ -359,7 +350,6 @@ public class LocalAppEngineServerLaunchConfigurationDelegate
       return;
     }
 
-
     LocalAppEngineServerBehaviour serverBehaviour = (LocalAppEngineServerBehaviour) server
         .loadAdapter(LocalAppEngineServerBehaviour.class, null);
 
@@ -389,7 +379,7 @@ public class LocalAppEngineServerLaunchConfigurationDelegate
     try {
       DefaultRunConfiguration devServerRunConfiguration =
           generateServerRunConfiguration(configuration, server);
-      devServerRunConfiguration.setAppYamls(runnables);
+      devServerRunConfiguration.setServices(runnables);
       if (ILaunchManager.DEBUG_MODE.equals(mode)) {
         int debugPort = getDebugPort();
         setupDebugTarget(devServerRunConfiguration, launch, debugPort, monitor);
