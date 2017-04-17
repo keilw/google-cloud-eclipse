@@ -116,7 +116,7 @@ public class DeployCommandHandler extends AbstractHandler {
 
     IPath workDirectory = createWorkDirectory();
     MessageConsoleStream outputStream = messageConsole.newMessageStream();
-    DefaultDeployConfiguration deployConfiguration = toDeployConfiguration(project);
+    DefaultDeployConfiguration deployConfiguration = toDeployConfiguration(deployPreferences);
     boolean includeOptionalConfigurationFiles =
         deployPreferences.isIncludeOptionalConfigurationFiles();
 
@@ -151,9 +151,8 @@ public class DeployCommandHandler extends AbstractHandler {
                                 nowString);
   }
 
-  private static DefaultDeployConfiguration toDeployConfiguration(IProject project)
-                                                                        throws ExecutionException {
-    DeployPreferences deployPreferences = new DeployPreferences(project);
+  private static DefaultDeployConfiguration toDeployConfiguration(
+      DeployPreferences deployPreferences) throws ExecutionException {
     if (deployPreferences.getProjectId() == null || deployPreferences.getProjectId().isEmpty()) {
       throw new ExecutionException(Messages.getString("error.projectId.missing"));
     }
