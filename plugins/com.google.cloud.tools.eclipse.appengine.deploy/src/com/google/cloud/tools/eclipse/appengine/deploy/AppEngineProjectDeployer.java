@@ -45,7 +45,7 @@ public class AppEngineProjectDeployer {
    * @param optionalConfigurationFilesDirectory if not {@code null}, searches optional configuration
    * files (such as {@code cron.yaml}) in this directory and deploys them together
    */
-  static void deploy(IPath stagingDirectory, CloudSdk cloudSdk,
+  public void deploy(IPath stagingDirectory, CloudSdk cloudSdk,
                      DefaultDeployConfiguration configuration,
                      IPath optionalConfigurationFilesDirectory, IProgressMonitor monitor) {
     if (monitor.isCanceled()) {

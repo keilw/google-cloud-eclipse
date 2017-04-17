@@ -71,7 +71,7 @@ public abstract class DeployJob extends WorkspaceJob {
   private IStatus cloudSdkProcessStatus = Status.OK_STATUS;
   private Process process;
 
-  protected final IProject project;
+  private final IProject project;
   private final Credential credential;
   private final IPath workDirectory;
   protected final ProcessOutputLineListener stagingStdoutLineListener;
@@ -170,7 +170,7 @@ public abstract class DeployJob extends WorkspaceJob {
     try {
       getJobManager().beginRule(project, null /* not worth a monitor */);
       IPath safeWorkDirectory = workDirectory.append(SAFE_STAGING_WORK_DIRECTORY_NAME);
-      return stage(stagingDirectory, safeWorkDirectory, monitor);
+      return stage(project, stagingDirectory, safeWorkDirectory, monitor);
     } catch (CoreException | IllegalArgumentException | OperationCanceledException ex) {
       return StatusUtil.error(this, Messages.getString("deploy.job.staging.failed"), ex);
     } finally {
@@ -179,13 +179,14 @@ public abstract class DeployJob extends WorkspaceJob {
   }
 
   /**
+   * @param project Eclipse project to be deployed
    * @param stagingDirectory directory where subclass methods should place necessary files for
    *     deployment, where this job will execute {@code gcloud app deploy}
    * @param safeWorkDirectory directory path that subclass methods may create safely to use as a
    *     temporary work directory during staging
    */
-  protected abstract IStatus stage(IPath stagingDirectory, IPath safeWorkDirectory,
-      IProgressMonitor monitor) throws CoreException;
+  protected abstract IStatus stage(IProject project, IPath stagingDirectory,
+      IPath safeWorkDirectory, IProgressMonitor monitor) throws CoreException;
 
   private IStatus deployProject(File credentialFile, IPath stagingDirectory,
       IProgressMonitor monitor) {
@@ -197,7 +198,7 @@ public abstract class DeployJob extends WorkspaceJob {
       optionalConfigurationFilesDirectory = getOptionalConfigurationFilesDirectory();
     }
 
-    AppEngineProjectDeployer.deploy(stagingDirectory, cloudSdk, deployConfiguration,
+    new AppEngineProjectDeployer().deploy(stagingDirectory, cloudSdk, deployConfiguration,
         optionalConfigurationFilesDirectory, monitor);
     return deployExitListener.getExitStatus();
   }
