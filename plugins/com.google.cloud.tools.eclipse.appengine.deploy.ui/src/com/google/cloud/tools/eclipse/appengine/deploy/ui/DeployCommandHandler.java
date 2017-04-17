@@ -111,7 +111,7 @@ public class DeployCommandHandler extends AbstractHandler {
     DeployPreferences deployPreferences = new DeployPreferences(project);
     DeployConsole messageConsole =
         MessageConsoleUtilities.createConsole(getConsoleName(deployPreferences.getProjectId()),
-                                              new DeployConsole.Factory(), true /* show */);
+                                              new DeployConsole.Factory(), true /* showConsole */);
 
     IPath workDirectory = createWorkDirectory();
     MessageConsoleStream outputStream = messageConsole.newMessageStream();
