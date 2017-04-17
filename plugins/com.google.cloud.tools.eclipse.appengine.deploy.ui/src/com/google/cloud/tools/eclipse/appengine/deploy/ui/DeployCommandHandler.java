@@ -112,11 +112,11 @@ public class DeployCommandHandler extends AbstractHandler {
     DeployPreferences deployPreferences = new DeployPreferences(project);
     DeployConsole messageConsole =
         MessageConsoleUtilities.createConsole(getConsoleName(deployPreferences.getProjectId()),
-                                              new DeployConsole.Factory(), true /* show */);
+                                              new DeployConsole.Factory(), true /* showConsole */);
 
     IPath workDirectory = createWorkDirectory();
     MessageConsoleStream outputStream = messageConsole.newMessageStream();
-    DefaultDeployConfiguration deployConfiguration = getDeployConfiguration(project);
+    DefaultDeployConfiguration deployConfiguration = toDeployConfiguration(project);
     boolean includeOptionalConfigurationFiles =
         deployPreferences.isIncludeOptionalConfigurationFiles();
 
@@ -151,7 +151,7 @@ public class DeployCommandHandler extends AbstractHandler {
                                 nowString);
   }
 
-  private static DefaultDeployConfiguration getDeployConfiguration(IProject project)
+  private static DefaultDeployConfiguration toDeployConfiguration(IProject project)
                                                                         throws ExecutionException {
     DeployPreferences deployPreferences = new DeployPreferences(project);
     if (deployPreferences.getProjectId() == null || deployPreferences.getProjectId().isEmpty()) {
