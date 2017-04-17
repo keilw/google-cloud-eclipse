@@ -100,7 +100,7 @@ public abstract class DeployJob extends WorkspaceJob {
       ProcessOutputLineListener stderrLineListener,
       DefaultDeployConfiguration deployConfiguration,
       boolean includeOptionalConfigurationFiles) {
-    super(Messages.getString("deploy.standard.runnable.name")); //$NON-NLS-1$
+    super(Messages.getString("deploy.job.name")); //$NON-NLS-1$
     this.project = project;
     this.credential = credential;
     this.workDirectory = workDirectory;
