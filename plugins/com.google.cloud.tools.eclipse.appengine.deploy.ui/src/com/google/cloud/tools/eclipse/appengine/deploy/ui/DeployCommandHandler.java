@@ -22,6 +22,7 @@ import com.google.cloud.tools.eclipse.appengine.deploy.CleanupOldDeploysJob;
 import com.google.cloud.tools.eclipse.appengine.deploy.DeployJob;
 import com.google.cloud.tools.eclipse.appengine.deploy.DeployPreferences;
 import com.google.cloud.tools.eclipse.appengine.deploy.DeployPreferencesConverter;
+import com.google.cloud.tools.eclipse.appengine.deploy.standard.StandardDeployJob;
 import com.google.cloud.tools.eclipse.googleapis.IGoogleApiFactory;
 import com.google.cloud.tools.eclipse.login.IGoogleLoginService;
 import com.google.cloud.tools.eclipse.sdk.ui.MessageConsoleWriterOutputLineListener;
@@ -49,8 +50,6 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
@@ -110,19 +109,18 @@ public class DeployCommandHandler extends AbstractHandler {
     AnalyticsPingManager.getInstance().sendPing(
         AnalyticsEvents.APP_ENGINE_DEPLOY, AnalyticsEvents.APP_ENGINE_DEPLOY_STANDARD, null);
 
-    IPath workDirectory = createWorkDirectory();
-
-    DefaultDeployConfiguration deployConfiguration = getDeployConfiguration(project);
+    DeployPreferences deployPreferences = new DeployPreferences(project);
     DeployConsole messageConsole =
-        MessageConsoleUtilities.createConsole(getConsoleName(deployConfiguration.getProject()),
-                                              new DeployConsole.Factory());
+        MessageConsoleUtilities.createConsole(getConsoleName(deployPreferences.getProjectId()),
+                                              new DeployConsole.Factory(), true /* show */);
 
+    IPath workDirectory = createWorkDirectory();
     MessageConsoleStream outputStream = messageConsole.newMessageStream();
-
+    DefaultDeployConfiguration deployConfiguration = getDeployConfiguration(project);
     boolean includeOptionalConfigurationFiles =
-        new DeployPreferences(project).isIncludeOptionalConfigurationFiles();
+        deployPreferences.isIncludeOptionalConfigurationFiles();
 
-    DeployJob deploy = new DeployJob(project, credential, workDirectory,
+    DeployJob deploy = new StandardDeployJob(project, credential, workDirectory,
         new MessageConsoleWriterOutputLineListener(outputStream),
         new MessageConsoleWriterOutputLineListener(outputStream),
         deployConfiguration, includeOptionalConfigurationFiles);
@@ -139,9 +137,6 @@ public class DeployCommandHandler extends AbstractHandler {
       }
     });
     deploy.schedule();
-
-    IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
-    consoleManager.showConsoleView(messageConsole);
   }
 
   private static String getConsoleName(String projectId) {
