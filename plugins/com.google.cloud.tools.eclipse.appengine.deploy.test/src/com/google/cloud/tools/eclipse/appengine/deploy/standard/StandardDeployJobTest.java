@@ -16,8 +16,30 @@
 
 package com.google.cloud.tools.eclipse.appengine.deploy.standard;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.cloud.tools.appengine.api.deploy.DefaultDeployConfiguration;
+import com.google.cloud.tools.appengine.cloudsdk.process.ProcessOutputLineListener;
+import com.google.cloud.tools.eclipse.appengine.facets.AppEngineStandardFacet;
+import com.google.cloud.tools.eclipse.test.util.project.TestProjectCreator;
+import java.io.IOException;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jst.common.project.facet.core.JavaFacet;
+import org.eclipse.jst.j2ee.web.project.facet.WebFacetUtils;
+import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
+import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
 public class StandardDeployJobTest {
-/*
+
   private static final IProjectFacetVersion APPENGINE_STANDARD_FACET_VERSION_1 =
       ProjectFacetsManager.getProjectFacet(AppEngineStandardFacet.ID).getVersion("1");
 
@@ -30,7 +52,7 @@ public class StandardDeployJobTest {
 
   @Before
   public void setUp() throws IOException {
-    IProject project = projectCreator.getProject();
+    project = projectCreator.getProject();
     safeWorkDirectory = project.getFolder("safe-work-directory").getLocation();
     stagingDirectory = project.getFolder("staging-result").getLocation();
   }
@@ -39,13 +61,20 @@ public class StandardDeployJobTest {
   public void testStage() throws CoreException {
     StandardDeployJob job = newStandardDeployJob();
     job.stage(project, stagingDirectory, safeWorkDirectory, new NullProgressMonitor());
-    for (String f : stagingDirectory.toFile().list()) {
-      System.out.println(f);
-    }
-    System.out.println("--");
-    for (String f : safeWorkDirectory.toFile().list()) {
-      System.out.println(f);
-    }
+
+    assertTrue(stagingDirectory.append("WEB-INF").toFile().exists());
+    assertTrue(stagingDirectory.append("WEB-INF/appengine-generated").toFile().exists());
+    assertTrue(stagingDirectory.append("META-INF").toFile().exists());
+    assertTrue(stagingDirectory.append("app.yaml").toFile().exists());
+  }
+
+  @Test
+  public void testGetOptionalConfigurationFilesDirectory() throws CoreException {
+    StandardDeployJob job = newStandardDeployJob();
+    job.stage(project, stagingDirectory, safeWorkDirectory, new NullProgressMonitor());
+
+    assertEquals(stagingDirectory.append("WEB-INF/appengine-generated"),
+        job.getOptionalConfigurationFilesDirectory());
   }
 
   private StandardDeployJob newStandardDeployJob() {
@@ -53,5 +82,4 @@ public class StandardDeployJobTest {
         mock(ProcessOutputLineListener.class), mock(ProcessOutputLineListener.class),
         mock(DefaultDeployConfiguration.class), false);
   }
-*/
 }

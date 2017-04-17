@@ -7,7 +7,6 @@ import com.google.cloud.tools.appengine.cloudsdk.process.ProcessOutputLineListen
 import com.google.cloud.tools.eclipse.appengine.deploy.DeployJob;
 import com.google.cloud.tools.eclipse.appengine.deploy.DeployStaging;
 import com.google.cloud.tools.eclipse.appengine.deploy.WarPublisher;
-import com.google.common.annotations.VisibleForTesting;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -27,9 +26,8 @@ public class StandardDeployJob extends DeployJob {
 
   private IPath optionalConfigurationFilesDirectory;
 
-  @VisibleForTesting
   @Override
-  public IStatus stage(IProject project, IPath stagingDirectory, IPath safeWorkDirectory,
+  protected IStatus stage(IProject project, IPath stagingDirectory, IPath safeWorkDirectory,
       IProgressMonitor monitor)
       throws CoreException {
     SubMonitor progress = SubMonitor.convert(monitor, 100);

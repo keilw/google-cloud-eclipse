@@ -44,10 +44,11 @@ public class FlexDeployJob extends DeployJob {
   }
 
   @Override
-  protected IStatus stage(IPath stagingDirectory, IPath safeWorkDirectory, IProgressMonitor monitor)
-      throws CoreException {
+  protected IStatus stage(IProject project, IPath stagingDirectory, IPath safeWorkDirectory,
+      IProgressMonitor monitor) throws CoreException {
     SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
 
+    stagingDirectory.toFile().mkdirs();
     IPath war = safeWorkDirectory.append("app-to-deploy.war");
     WarPublisher.publishWar(project, war, subMonitor.newChild(40));
     DeployStaging.stageFlexible(appEngineDirectory, war, stagingDirectory,

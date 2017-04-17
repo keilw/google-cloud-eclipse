@@ -16,6 +16,76 @@
 
 package com.google.cloud.tools.eclipse.appengine.deploy.flex;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.cloud.tools.appengine.api.deploy.DefaultDeployConfiguration;
+import com.google.cloud.tools.appengine.cloudsdk.process.ProcessOutputLineListener;
+import com.google.cloud.tools.eclipse.appengine.facets.AppEngineStandardFacet;
+import com.google.cloud.tools.eclipse.test.util.project.TestProjectCreator;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jst.common.project.facet.core.JavaFacet;
+import org.eclipse.jst.j2ee.web.project.facet.WebFacetUtils;
+import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
+import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
 public class FlexDeployJobTest {
 
+  private static final String APP_YAML = "runtime: java\nenv: flex";
+
+  private static final IProjectFacetVersion APPENGINE_STANDARD_FACET_VERSION_1 =
+      ProjectFacetsManager.getProjectFacet(AppEngineStandardFacet.ID).getVersion("1");
+
+  @Rule public TestProjectCreator projectCreator = new TestProjectCreator().withFacetVersions(
+      JavaFacet.VERSION_1_7, WebFacetUtils.WEB_25, APPENGINE_STANDARD_FACET_VERSION_1);
+
+  private IProject project;
+  private IPath safeWorkDirectory;
+  private IPath stagingDirectory;
+  private IPath appEngineDirectory;
+
+  @Before
+  public void setUp() throws CoreException {
+    project = projectCreator.getProject();
+    safeWorkDirectory = project.getFolder("safe-work-directory").getLocation();
+    stagingDirectory = project.getFolder("staging-result").getLocation();
+    appEngineDirectory = project.getFolder("src/main/appengine").getLocation();
+    project.getFolder("src/main").create(true, true, null);
+    project.getFolder("src/main/appengine").create(true, true, null);
+    project.getFile("src/main/appengine/app.yaml").create(
+        new ByteArrayInputStream(APP_YAML.getBytes(StandardCharsets.UTF_8)), true, null);
+  }
+
+  @Test
+  public void testStage() throws CoreException {
+    FlexDeployJob job = newFlexDeployJob();
+    job.stage(project, stagingDirectory, safeWorkDirectory, new NullProgressMonitor());
+
+    assertTrue(stagingDirectory.append("app-to-deploy.war").toFile().exists());
+    assertTrue(stagingDirectory.append("app.yaml").toFile().exists());
+  }
+
+  @Test
+  public void testGetOptionalConfigurationFilesDirectory() throws CoreException {
+    FlexDeployJob job = newFlexDeployJob();
+    job.stage(project, stagingDirectory, safeWorkDirectory, new NullProgressMonitor());
+
+    assertEquals(appEngineDirectory, job.getOptionalConfigurationFilesDirectory());
+  }
+
+  private FlexDeployJob newFlexDeployJob() {
+    return new FlexDeployJob(mock(IProject.class), mock(Credential.class), mock(IPath.class),
+        mock(ProcessOutputLineListener.class), mock(ProcessOutputLineListener.class),
+        mock(DefaultDeployConfiguration.class), false, appEngineDirectory);
+  }
 }
