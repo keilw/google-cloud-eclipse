@@ -235,14 +235,7 @@ public class CommonDeployPreferencesPanel extends DeployPreferencesPanel {
         WidgetProperties.selection().observe(autoPromoteButton);
 
     IObservableValue promoteModel = PojoProperties.value("autoPromote").observe(model);
-    IObservableValue stopPreviousVersionModel =
-        PojoProperties.value("stopPreviousVersion").observe(model);
-
     context.bindValue(promoteButton, promoteModel);
-
-    // Intermediary model necessary for "Restore Defaults" to work.
-    final IObservableValue currentStopPreviousVersionChoice = new WritableValue();
-    context.bindValue(currentStopPreviousVersionChoice, stopPreviousVersionModel);
   }
 
   private void setupOptionalConfigurationFilesDataBinding(DataBindingContext context) {
