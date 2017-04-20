@@ -49,6 +49,7 @@ public class FlexDeployPreferencesPanel extends DeployPreferencesPanel {
   private Label dockerFileLabel;
   private Text dockerFileText;
   private Button dockerFileBrowseButton;
+  private Button stopPreviousVersionButton;
 
   public FlexDeployPreferencesPanel(Composite parent, IProject project) {
     this(parent, project, new FlexDeployPreferences(project));
