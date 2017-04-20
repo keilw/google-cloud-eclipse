@@ -21,7 +21,6 @@ import com.google.cloud.tools.eclipse.appengine.libraries.model.Library;
 import com.google.cloud.tools.eclipse.appengine.ui.AppEngineImages;
 import com.google.cloud.tools.eclipse.appengine.ui.LibrarySelectorGroup;
 import com.google.cloud.tools.project.ServiceNameValidator;
-import com.google.common.base.Strings;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
@@ -143,7 +142,7 @@ public abstract class AppEngineWizardPage extends WizardNewProjectCreationPage {
 
     String serviceName = serviceNameField.getText();
     boolean serviceNameValid =
-        Strings.isNullOrEmpty(serviceName) || ServiceNameValidator.validate(serviceName);
+        serviceName.isEmpty() || ServiceNameValidator.validate(serviceName);
     if (!serviceNameValid) {
       String message = Messages.getString("illegal.service.name"); //$NON-NLS-1$
       setErrorMessage(message);
