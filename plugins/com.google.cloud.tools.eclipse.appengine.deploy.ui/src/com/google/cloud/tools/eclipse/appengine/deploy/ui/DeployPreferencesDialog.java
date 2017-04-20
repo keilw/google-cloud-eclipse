@@ -39,6 +39,7 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.layout.LayoutConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
@@ -53,11 +54,12 @@ public class DeployPreferencesDialog extends TitleAreaDialog {
   private final Image titleImage = AppEngineImages.appEngine(64).createImage();
 
   private CommonDeployPreferencesPanel content;
-  private IProject project;
-  private IGoogleLoginService loginService;
-  private IGoogleApiFactory googleApiFactory;
+  private final String title;
+  private final IProject project;
+  private final IGoogleLoginService loginService;
+  private final IGoogleApiFactory googleApiFactory;
 
-  public DeployPreferencesDialog(Shell parentShell, IProject project,
+  public DeployPreferencesDialog(Shell parentShell, String title, IProject project,
                                  IGoogleLoginService loginService,
                                  IGoogleApiFactory googleApiFactory) {
     super(parentShell);
@@ -65,6 +67,7 @@ public class DeployPreferencesDialog extends TitleAreaDialog {
     Preconditions.checkNotNull(project, "project is null");
     Preconditions.checkNotNull(loginService, "loginService is null");
     Preconditions.checkNotNull(googleApiFactory, "googleApiFactory is null");
+    this.title = title;
     this.project = project;
     this.loginService = loginService;
     this.googleApiFactory = googleApiFactory;
@@ -74,7 +77,7 @@ public class DeployPreferencesDialog extends TitleAreaDialog {
   protected Control createContents(Composite parent) {
     Control contents = super.createContents(parent);
 
-    getShell().setText(Messages.getString("deploy.preferences.dialog.title"));
+    getShell().setText(title);
     setTitle(Messages.getString("deploy.preferences.dialog.title.withProject", project.getName()));
     setTitleImage(titleImage);
 
@@ -99,10 +102,7 @@ public class DeployPreferencesDialog extends TitleAreaDialog {
     // we pull in Dialog's content margins which are zeroed out by TitleAreaDialog
     GridDataFactory.fillDefaults().grab(true, true).applyTo(container);
     GridLayoutFactory.fillDefaults()
-        .margins(convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN),
-            convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN))
-        .spacing(convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING),
-            convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING))
+        .margins(LayoutConstants.getMargins().x, LayoutConstants.getMargins().y)
         .generateLayout(container);
 
     TitleAreaDialogSupport.create(this, content.getDataBindingContext())
