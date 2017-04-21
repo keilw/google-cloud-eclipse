@@ -18,20 +18,27 @@ package com.google.cloud.tools.eclipse.appengine.deploy.ui.standard;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.google.cloud.tools.eclipse.login.IGoogleLoginService;
 import com.google.cloud.tools.eclipse.projectselector.ProjectRepository;
+import com.google.cloud.tools.eclipse.test.util.ui.ShellTestResource;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.swt.widgets.Shell;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class StandardDeployPreferencesPanelTest {
 
+  @Rule public ShellTestResource shellResource = new ShellTestResource();
+
   @Test
   public void testGetHelpContextId() {
-    StandardDeployPreferencesPanel panel = new StandardDeployPreferencesPanel(mock(Shell.class),
-        mock(IProject.class), mock(IGoogleLoginService.class), mock(Runnable.class), false,
-        mock(ProjectRepository.class));
+    IProject project = mock(IProject.class);
+    when(project.getName()).thenReturn("");
+    StandardDeployPreferencesPanel panel = new StandardDeployPreferencesPanel(
+        shellResource.getShell(), project, mock(IGoogleLoginService.class), mock(Runnable.class),
+        false, mock(ProjectRepository.class));
+
     assertEquals(
         "com.google.cloud.tools.eclipse.appengine.deploy.ui.DeployAppEngineStandardProjectContext",
         panel.getHelpContextId());

@@ -18,20 +18,27 @@ package com.google.cloud.tools.eclipse.appengine.deploy.ui.flexible;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.google.cloud.tools.eclipse.login.IGoogleLoginService;
 import com.google.cloud.tools.eclipse.projectselector.ProjectRepository;
+import com.google.cloud.tools.eclipse.test.util.ui.ShellTestResource;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.swt.widgets.Shell;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class FlexDeployPreferencesPanelTest {
 
+  @Rule public ShellTestResource shellResource = new ShellTestResource();
+
   @Test
   public void testGetHelpContextId() {
-    FlexDeployPreferencesPanel panel = new FlexDeployPreferencesPanel(mock(Shell.class),
-        mock(IProject.class), mock(IGoogleLoginService.class), mock(Runnable.class), false,
+    IProject project = mock(IProject.class);
+    when(project.getName()).thenReturn("");
+    FlexDeployPreferencesPanel panel = new FlexDeployPreferencesPanel(shellResource.getShell(),
+        project, mock(IGoogleLoginService.class), mock(Runnable.class), false,
         mock(ProjectRepository.class));
+
     assertEquals(
         "com.google.cloud.tools.eclipse.appengine.deploy.ui.DeployAppEngineFlexProjectContext",
         panel.getHelpContextId());
