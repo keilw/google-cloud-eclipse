@@ -62,7 +62,16 @@ public class DeployPreferences {
   @VisibleForTesting
   DeployPreferences(IEclipsePreferences preferences) {
     preferenceStore = preferences;
-    resetToDefaults();
+
+    accountEmail = preferences.get(PREF_ACCOUNT_EMAIL, DEFAULT_ACCOUNT_EMAIL);
+    projectId = preferences.get(PREF_PROJECT_ID, DEFAULT_PROJECT_ID);
+    version = preferences.get(PREF_CUSTOM_VERSION, DEFAULT_CUSTOM_VERSION);
+    autoPromote = preferences.getBoolean(PREF_ENABLE_AUTO_PROMOTE, DEFAULT_ENABLE_AUTO_PROMOTE);
+    includeOptionalConfigurationFiles = preferences.getBoolean(
+        PREF_INCLUDE_OPTIONAL_CONFIGURATION_FILES, DEFAULT_INCLUDE_OPTIONAL_CONFIGURATION_FILES);
+    bucket = preferences.get(PREF_CUSTOM_BUCKET, DEFAULT_CUSTOM_BUCKET);
+    stopPreviousVersion = preferences.getBoolean(
+        PREF_STOP_PREVIOUS_VERSION, DEFAULT_STOP_PREVIOUS_VERSION);
   }
 
   public void resetToDefaults() {
