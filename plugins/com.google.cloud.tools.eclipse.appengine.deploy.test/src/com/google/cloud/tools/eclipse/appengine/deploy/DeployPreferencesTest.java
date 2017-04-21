@@ -16,32 +16,40 @@
 
 package com.google.cloud.tools.eclipse.appengine.deploy;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.text.IsEmptyString.isEmptyString;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import com.google.cloud.tools.eclipse.test.util.project.TestProjectCreator;
 import org.eclipse.core.resources.IProject;
-import org.junit.Rule;
+import org.junit.Before;
 import org.junit.Test;
 
 public class DeployPreferencesTest {
 
-  @Rule public final TestProjectCreator projectCreator = new TestProjectCreator();
+  private DeployPreferences preferences;
+
+  @Before
+  public void setUp() {
+    IProject project = mock(IProject.class);
+    when(project.getName()).thenReturn("");
+    preferences = new DeployPreferences(project);
+  }
 
   @Test
   public void testDefaultProjectId() {
     assertThat(DeployPreferences.DEFAULT_PROJECT_ID, isEmptyString());
+    assertThat(preferences.getProjectId(), isEmptyString());
   }
 
   @Test
   public void testSetProjectId() {
-    IProject project = projectCreator.getProject();
-    DeployPreferences preferences = new DeployPreferences(project);
     assertThat(preferences.getProjectId(), isEmptyString());
     preferences.setProjectId("someproject32");
-    assertEquals("someproject32", preferences.getProjectId());
+    assertThat(preferences.getProjectId(), is("someproject32"));
     preferences.setProjectId(null);
     assertThat(preferences.getProjectId(), isEmptyString());
   }
@@ -49,31 +57,110 @@ public class DeployPreferencesTest {
   @Test
   public void testDefaultAccountEmail() {
     assertThat(DeployPreferences.DEFAULT_ACCOUNT_EMAIL, isEmptyString());
+    assertThat(preferences.getAccountEmail(), isEmptyString());
+  }
+
+  @Test
+  public void testSetAccountEmail() {
+    assertThat(preferences.getAccountEmail(), isEmptyString());
+    preferences.setAccountEmail("someemail72");
+    assertThat(preferences.getAccountEmail(), is("someemail72"));
+    preferences.setAccountEmail(null);
+    assertThat(preferences.getAccountEmail(), isEmptyString());
   }
 
   @Test
   public void testDefaultVersion() {
     assertThat(DeployPreferences.DEFAULT_CUSTOM_VERSION, isEmptyString());
+    assertThat(preferences.getVersion(), isEmptyString());
+  }
+
+  @Test
+  public void testSetVersion() {
+    assertThat(preferences.getVersion(), isEmptyString());
+    preferences.setVersion("someversion97");
+    assertThat(preferences.getVersion(), is("someversion97"));
+    preferences.setVersion(null);
+    assertThat(preferences.getVersion(), isEmptyString());
   }
 
   @Test
   public void testDefaultAutoPromote() {
     assertTrue(DeployPreferences.DEFAULT_ENABLE_AUTO_PROMOTE);
+    assertTrue(preferences.isAutoPromote());
+  }
+
+  @Test
+  public void testSetAutoPromote() {
+    assertTrue(preferences.isAutoPromote());
+    preferences.setAutoPromote(false);
+    assertFalse(preferences.isAutoPromote());
+    preferences.setAutoPromote(true);
+    assertTrue(preferences.isAutoPromote());
   }
 
   @Test
   public void testDefaultBucket() {
     assertThat(DeployPreferences.DEFAULT_CUSTOM_BUCKET, isEmptyString());
+    assertThat(preferences.getBucket(), isEmptyString());
+  }
+
+  @Test
+  public void testSetBucket() {
+    assertThat(preferences.getBucket(), isEmptyString());
+    preferences.setBucket("somebucket45");
+    assertThat(preferences.getBucket(), is("somebucket45"));
+    preferences.setBucket(null);
+    assertThat(preferences.getBucket(), isEmptyString());
   }
 
   @Test
   public void testDefaultStopPreviousVersion() {
     assertTrue(DeployPreferences.DEFAULT_STOP_PREVIOUS_VERSION);
+    assertTrue(preferences.isStopPreviousVersion());
   }
 
   @Test
-  public void testIncludeOptionalConfigurationFiles() {
-    assertTrue(DeployPreferences.DEFAULT_INCLUDE_OPTIONAL_CONFIGURATION_FILES);
+  public void testSetStopPreviousVersion() {
+    assertTrue(preferences.isStopPreviousVersion());
+    preferences.setStopPreviousVersion(false);
+    assertFalse(preferences.isStopPreviousVersion());
+    preferences.setStopPreviousVersion(true);
+    assertTrue(preferences.isStopPreviousVersion());
   }
 
+  @Test
+  public void testDefaultIncludeOptionalConfigurationFiles() {
+    assertTrue(DeployPreferences.DEFAULT_INCLUDE_OPTIONAL_CONFIGURATION_FILES);
+    assertTrue(preferences.isIncludeOptionalConfigurationFiles());
+  }
+
+  @Test
+  public void testSetIncludeOptionalConfigurationFiles() {
+    assertTrue(preferences.isIncludeOptionalConfigurationFiles());
+    preferences.setIncludeOptionalConfigurationFiles(false);
+    assertFalse(preferences.isIncludeOptionalConfigurationFiles());
+    preferences.setIncludeOptionalConfigurationFiles(true);
+    assertTrue(preferences.isIncludeOptionalConfigurationFiles());
+  }
+
+  @Test
+  public void testResetToDefault() {
+    preferences.setProjectId("someproject32");
+    preferences.setAccountEmail("someemail72");
+    preferences.setVersion("someversion97");
+    preferences.setAutoPromote(false);
+    preferences.setBucket("somebucket45");
+    preferences.setStopPreviousVersion(false);
+    preferences.setIncludeOptionalConfigurationFiles(false);
+    preferences.resetToDefaults();
+
+    assertThat(preferences.getProjectId(), isEmptyString());
+    assertThat(preferences.getAccountEmail(), isEmptyString());
+    assertThat(preferences.getVersion(), isEmptyString());
+    assertTrue(preferences.isAutoPromote());
+    assertThat(preferences.getBucket(), isEmptyString());
+    assertTrue(preferences.isStopPreviousVersion());
+    assertTrue(preferences.isIncludeOptionalConfigurationFiles());
+  }
 }
