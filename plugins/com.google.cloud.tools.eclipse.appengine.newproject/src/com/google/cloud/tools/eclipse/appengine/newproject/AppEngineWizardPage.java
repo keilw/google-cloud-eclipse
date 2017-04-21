@@ -135,7 +135,7 @@ public abstract class AppEngineWizardPage extends WizardNewProjectCreationPage {
     IStatus packageStatus = JavaPackageValidator.validate(packageName);
     if (!packageStatus.isOK()) {
       String message = Messages.getString("illegal.package.name",  //$NON-NLS-1$
-          packageStatus.getMessage());
+          packageName, packageStatus.getMessage());
       setErrorMessage(message);
       return false;
     }
@@ -144,7 +144,7 @@ public abstract class AppEngineWizardPage extends WizardNewProjectCreationPage {
     boolean serviceNameValid =
         serviceName.isEmpty() || ServiceNameValidator.validate(serviceName);
     if (!serviceNameValid) {
-      String message = Messages.getString("illegal.service.name"); //$NON-NLS-1$
+      String message = Messages.getString("illegal.service.name", serviceName); //$NON-NLS-1$
       setErrorMessage(message);
       return false;
     }
