@@ -102,5 +102,12 @@
               version="1.2" />
       </libraryFile>
     </library>
+  </extension>
+  <extension
+        point="org.eclipse.wst.common.project.facet.core.listeners">
+     <listener
+           class="com.google.cloud.tools.eclipse.appengine.standard.java8.JavaFacetChangeListener"
+           eventTypes="POST_VERSION_CHANGE">
+     </listener>
   </extension>   
 </plugin>
