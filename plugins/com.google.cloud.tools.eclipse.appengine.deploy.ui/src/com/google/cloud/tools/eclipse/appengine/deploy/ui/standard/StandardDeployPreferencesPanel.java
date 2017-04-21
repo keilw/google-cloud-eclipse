@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2017 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,25 @@
  * limitations under the License.
  */
 
-package com.google.cloud.tools.eclipse.appengine.deploy.ui;
+package com.google.cloud.tools.eclipse.appengine.deploy.ui.standard;
 
+import com.google.cloud.tools.eclipse.appengine.deploy.ui.BaseDeployPreferencesPanel;
 import com.google.cloud.tools.eclipse.login.IGoogleLoginService;
 import com.google.cloud.tools.eclipse.projectselector.ProjectRepository;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.widgets.Composite;
 
-public class FlexDeployPreferencesPanel extends CommonDeployPreferencesPanel {
+public class StandardDeployPreferencesPanel extends BaseDeployPreferencesPanel {
 
-  public FlexDeployPreferencesPanel(Composite parent, IProject project,
+  public StandardDeployPreferencesPanel(Composite parent, IProject project,
       IGoogleLoginService loginService, Runnable layoutChangedHandler, boolean requireValues,
       ProjectRepository projectRepository) {
     super(parent, project, loginService, layoutChangedHandler, requireValues, projectRepository);
+  }
+
+  @Override
+  protected String getHelpContextId() {
+    return "com.google.cloud.tools.eclipse.appengine.deploy.ui.DeployAppEngineStandardProjectContext";
   }
 
 }

@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.cloud.tools.eclipse.appengine.deploy.ui;
+package com.google.cloud.tools.eclipse.appengine.deploy.ui.flexible;
 
+import com.google.cloud.tools.eclipse.appengine.deploy.ui.DeployPropertyPageTest;
 import com.google.cloud.tools.eclipse.appengine.facets.AppEngineFlexFacet;
 import com.google.cloud.tools.eclipse.test.util.project.TestProjectCreator;
 import org.eclipse.core.resources.IProject;
@@ -36,7 +37,7 @@ public class DeployPropertyPageForFlexProjectTest
   @Rule
   public TestProjectCreator flexProjectCreator = new TestProjectCreator().withFacetVersions(
       JavaFacet.VERSION_1_7, WebFacetUtils.WEB_25, APP_ENGINE_FLEX_FACET_1);
-  
+
   @Override
   protected IProject getProject() {
     IProject project = flexProjectCreator.getProject();

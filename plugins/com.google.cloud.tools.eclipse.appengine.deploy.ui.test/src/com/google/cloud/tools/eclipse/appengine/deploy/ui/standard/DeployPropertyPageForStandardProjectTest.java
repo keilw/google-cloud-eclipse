@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package com.google.cloud.tools.eclipse.appengine.deploy.ui;
+package com.google.cloud.tools.eclipse.appengine.deploy.ui.standard;
 
+import com.google.cloud.tools.eclipse.appengine.deploy.ui.BaseDeployPreferencesPanel;
+import com.google.cloud.tools.eclipse.appengine.deploy.ui.DeployPropertyPageTest;
 import com.google.cloud.tools.eclipse.appengine.facets.AppEngineStandardFacet;
 import com.google.cloud.tools.eclipse.test.util.project.TestProjectCreator;
 import org.eclipse.core.resources.IProject;
@@ -26,7 +28,7 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 import org.junit.Rule;
 
 public class DeployPropertyPageForStandardProjectTest
-    extends DeployPropertyPageTest<CommonDeployPreferencesPanel> {
+    extends DeployPropertyPageTest<BaseDeployPreferencesPanel> {
 
   protected static final IProjectFacetVersion APP_ENGINE_STANDARD_FACET_1 =
       ProjectFacetsManager.getProjectFacet(AppEngineStandardFacet.ID).getVersion("1");
@@ -41,7 +43,7 @@ public class DeployPropertyPageForStandardProjectTest
   }
 
   @Override
-  protected Class<CommonDeployPreferencesPanel> getPanelClass() {
-    return CommonDeployPreferencesPanel.class;
+  protected Class<BaseDeployPreferencesPanel> getPanelClass() {
+    return BaseDeployPreferencesPanel.class;
   }
 }

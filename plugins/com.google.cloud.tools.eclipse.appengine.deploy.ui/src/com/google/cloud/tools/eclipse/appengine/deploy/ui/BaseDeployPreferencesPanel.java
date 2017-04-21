@@ -83,7 +83,7 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.osgi.service.prefs.BackingStoreException;
 
-public class CommonDeployPreferencesPanel extends DeployPreferencesPanel {
+public abstract class BaseDeployPreferencesPanel extends DeployPreferencesPanel {
 
   private static final String APPENGINE_VERSIONS_URL =
       "https://console.cloud.google.com/appengine/versions";
@@ -91,7 +91,7 @@ public class CommonDeployPreferencesPanel extends DeployPreferencesPanel {
       "https://console.cloud.google.com/projectselector/appengine/create?lang=java";
 
   private static final Logger logger = Logger.getLogger(
-      CommonDeployPreferencesPanel.class.getName());
+      BaseDeployPreferencesPanel.class.getName());
 
   private AccountSelector accountSelector;
 
@@ -122,7 +122,7 @@ public class CommonDeployPreferencesPanel extends DeployPreferencesPanel {
   private final ProjectRepository projectRepository;
   private final FormToolkit formToolkit;
 
-  public CommonDeployPreferencesPanel(Composite parent, IProject project,
+  public BaseDeployPreferencesPanel(Composite parent, IProject project,
       IGoogleLoginService loginService, Runnable layoutChangedHandler, boolean requireValues,
       ProjectRepository projectRepository) {
     super(parent, SWT.NONE);
@@ -658,10 +658,5 @@ public class CommonDeployPreferencesPanel extends DeployPreferencesPanel {
     super.setFont(font);
     expandableComposite.setFont(font);
     FontUtil.convertFontToBold(expandableComposite);
-  }
-
-  @Override
-  String getHelpContextId() {
-    return "com.google.cloud.tools.eclipse.appengine.deploy.ui.DeployAppEngineStandardProjectContext"; //$NON-NLS-1$
   }
 }
