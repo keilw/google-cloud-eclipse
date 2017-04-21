@@ -47,6 +47,14 @@ public class DeployPreferences {
 
   private final IEclipsePreferences preferenceStore;
 
+  private String accountEmail;
+  private String projectId;
+  private String version;
+  private boolean autoPromote;
+  private boolean stopPreviousVersion;
+  private boolean includeOptionalConfigurationFiles;
+  private String bucket;
+
   public DeployPreferences(IProject project) {
     this(new ProjectScope(project).getNode(PREFERENCE_STORE_QUALIFIER));
   }
@@ -54,68 +62,85 @@ public class DeployPreferences {
   @VisibleForTesting
   DeployPreferences(IEclipsePreferences preferences) {
     preferenceStore = preferences;
+    resetToDefaults();
+  }
+
+  public void resetToDefaults() {
+    accountEmail = DEFAULT_ACCOUNT_EMAIL;
+    projectId = DEFAULT_PROJECT_ID;
+    version = DEFAULT_CUSTOM_VERSION;
+    autoPromote = DEFAULT_ENABLE_AUTO_PROMOTE;
+    stopPreviousVersion = DEFAULT_STOP_PREVIOUS_VERSION;
+    includeOptionalConfigurationFiles = DEFAULT_INCLUDE_OPTIONAL_CONFIGURATION_FILES;
+    bucket = DEFAULT_CUSTOM_BUCKET;
   }
 
   public void save() throws BackingStoreException {
+    preferenceStore.put(PREF_ACCOUNT_EMAIL, Strings.nullToEmpty(accountEmail));
+    preferenceStore.put(PREF_PROJECT_ID, Strings.nullToEmpty(projectId));
+    preferenceStore.put(PREF_CUSTOM_VERSION, Strings.nullToEmpty(version));
+    preferenceStore.putBoolean(PREF_ENABLE_AUTO_PROMOTE, autoPromote);
+    preferenceStore.putBoolean(
+        PREF_INCLUDE_OPTIONAL_CONFIGURATION_FILES, includeOptionalConfigurationFiles);
+    preferenceStore.put(PREF_CUSTOM_BUCKET, Strings.nullToEmpty(bucket));
+    preferenceStore.putBoolean(PREF_STOP_PREVIOUS_VERSION, stopPreviousVersion);
     preferenceStore.flush();
   }
 
   public String getAccountEmail() {
-    return preferenceStore.get(PREF_ACCOUNT_EMAIL, DEFAULT_ACCOUNT_EMAIL);
+    return accountEmail;
   }
 
   public void setAccountEmail(String accountEmail) {
-    preferenceStore.put(PREF_ACCOUNT_EMAIL, Strings.nullToEmpty(accountEmail));
+    this.accountEmail = Strings.nullToEmpty(accountEmail);
   }
 
   public String getProjectId() {
-    return preferenceStore.get(PREF_PROJECT_ID, DEFAULT_PROJECT_ID);
+    return projectId;
   }
 
   public void setProjectId(String projectId) {
-    preferenceStore.put(PREF_PROJECT_ID, Strings.nullToEmpty(projectId));
+    this.projectId = Strings.nullToEmpty(projectId);
   }
 
   public String getVersion() {
-    return preferenceStore.get(PREF_CUSTOM_VERSION, DEFAULT_CUSTOM_VERSION);
+    return version;
   }
 
   public void setVersion(String version) {
-    preferenceStore.put(PREF_CUSTOM_VERSION, Strings.nullToEmpty(version));
+    this.version = Strings.nullToEmpty(version);
   }
 
   public boolean isAutoPromote() {
-    return preferenceStore.getBoolean(PREF_ENABLE_AUTO_PROMOTE, DEFAULT_ENABLE_AUTO_PROMOTE);
+    return autoPromote;
   }
 
   public void setAutoPromote(boolean autoPromote) {
-    preferenceStore.putBoolean(PREF_ENABLE_AUTO_PROMOTE, autoPromote);
-  }
-
-  public boolean isIncludeOptionalConfigurationFiles() {
-    return preferenceStore.getBoolean(PREF_INCLUDE_OPTIONAL_CONFIGURATION_FILES,
-        DEFAULT_INCLUDE_OPTIONAL_CONFIGURATION_FILES);
-  }
-
-  public void setIncludeOptionalConfigurationFiles(boolean includeOptionalConfigurationFiles) {
-    preferenceStore.putBoolean(
-        PREF_INCLUDE_OPTIONAL_CONFIGURATION_FILES, includeOptionalConfigurationFiles);
-  }
-
-  public String getBucket() {
-    return preferenceStore.get(PREF_CUSTOM_BUCKET, DEFAULT_CUSTOM_BUCKET);
-  }
-
-  public void setBucket(String bucket) {
-    preferenceStore.put(PREF_CUSTOM_BUCKET, Strings.nullToEmpty(bucket));
+    this.autoPromote = autoPromote;
   }
 
   public boolean isStopPreviousVersion() {
-    return preferenceStore.getBoolean(PREF_STOP_PREVIOUS_VERSION, DEFAULT_STOP_PREVIOUS_VERSION);
+    return stopPreviousVersion;
   }
 
   public void setStopPreviousVersion(boolean stopPreviousVersion) {
-    preferenceStore.putBoolean(PREF_STOP_PREVIOUS_VERSION, stopPreviousVersion);
+    this.stopPreviousVersion = stopPreviousVersion;
+  }
+
+  public boolean isIncludeOptionalConfigurationFiles() {
+    return includeOptionalConfigurationFiles;
+  }
+
+  public void setIncludeOptionalConfigurationFiles(boolean includeOptionalConfigurationFiles) {
+    this.includeOptionalConfigurationFiles = includeOptionalConfigurationFiles;
+  }
+
+  public String getBucket() {
+    return bucket;
+  }
+
+  public void setBucket(String bucket) {
+    this.bucket = Strings.nullToEmpty(bucket);
   }
 
 }
