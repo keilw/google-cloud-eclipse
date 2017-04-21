@@ -119,14 +119,6 @@ public class DeployPreferences {
     this.autoPromote = autoPromote;
   }
 
-  public boolean isStopPreviousVersion() {
-    return stopPreviousVersion;
-  }
-
-  public void setStopPreviousVersion(boolean stopPreviousVersion) {
-    this.stopPreviousVersion = stopPreviousVersion;
-  }
-
   public boolean isIncludeOptionalConfigurationFiles() {
     return includeOptionalConfigurationFiles;
   }
@@ -141,6 +133,14 @@ public class DeployPreferences {
 
   public void setBucket(String bucket) {
     this.bucket = Strings.nullToEmpty(bucket);
+  }
+
+  public boolean isStopPreviousVersion() {
+    return stopPreviousVersion;
+  }
+
+  public void setStopPreviousVersion(boolean stopPreviousVersion) {
+    this.stopPreviousVersion = stopPreviousVersion;
   }
 
 }
