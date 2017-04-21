@@ -34,10 +34,7 @@ public class DeployPreferencesModel {
 
   public DeployPreferencesModel(IProject project) {
     preferences = new DeployPreferences(project);
-    applyPreferences(preferences);
-  }
 
-  private void applyPreferences(DeployPreferences preferences) {
     setAccountEmail(preferences.getAccountEmail());
     setProjectId(preferences.getProjectId());
     setVersion(preferences.getVersion());
@@ -48,7 +45,13 @@ public class DeployPreferencesModel {
   }
 
   void resetToDefaults() {
-    applyPreferences(DeployPreferences.getDefaultPreferences());
+    setAccountEmail(DeployPreferences.DEFAULT_ACCOUNT_EMAIL);
+    setProjectId(DeployPreferences.DEFAULT_PROJECT_ID);
+    setVersion(DeployPreferences.DEFAULT_CUSTOM_VERSION);
+    setAutoPromote(DeployPreferences.DEFAULT_ENABLE_AUTO_PROMOTE);
+    setStopPreviousVersion(DeployPreferences.DEFAULT_STOP_PREVIOUS_VERSION);
+    setIncludeOptionalConfigurationFiles(DeployPreferences.DEFAULT_INCLUDE_OPTIONAL_CONFIGURATION_FILES);
+    setBucket(DeployPreferences.DEFAULT_CUSTOM_BUCKET);
   }
 
   public void savePreferences() throws BackingStoreException {

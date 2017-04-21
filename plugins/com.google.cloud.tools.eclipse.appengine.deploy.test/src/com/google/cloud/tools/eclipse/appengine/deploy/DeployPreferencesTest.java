@@ -29,11 +29,10 @@ import org.junit.Test;
 public class DeployPreferencesTest {
 
   @Rule public final TestProjectCreator projectCreator = new TestProjectCreator();
-  private final DeployPreferences defaultPreferences = DeployPreferences.getDefaultPreferences();
 
   @Test
   public void testDefaultProjectId() {
-    assertThat(defaultPreferences.getProjectId(), isEmptyString());
+    assertThat(DeployPreferences.DEFAULT_PROJECT_ID, isEmptyString());
   }
 
   @Test
@@ -48,28 +47,33 @@ public class DeployPreferencesTest {
   }
 
   @Test
+  public void testDefaultAccountEmail() {
+    assertThat(DeployPreferences.DEFAULT_ACCOUNT_EMAIL, isEmptyString());
+  }
+
+  @Test
   public void testDefaultVersion() {
-    assertThat(defaultPreferences.getVersion(), isEmptyString());
+    assertThat(DeployPreferences.DEFAULT_CUSTOM_VERSION, isEmptyString());
   }
 
   @Test
   public void testDefaultAutoPromote() {
-    assertTrue(defaultPreferences.isAutoPromote());
+    assertTrue(DeployPreferences.DEFAULT_ENABLE_AUTO_PROMOTE);
   }
 
   @Test
   public void testDefaultBucket() {
-    assertThat(defaultPreferences.getBucket(), isEmptyString());
+    assertThat(DeployPreferences.DEFAULT_CUSTOM_BUCKET, isEmptyString());
   }
 
   @Test
   public void testDefaultStopPreviousVersion() {
-    assertTrue(defaultPreferences.isStopPreviousVersion());
+    assertTrue(DeployPreferences.DEFAULT_STOP_PREVIOUS_VERSION);
   }
 
   @Test
   public void testIncludeOptionalConfigurationFiles() {
-    assertTrue(defaultPreferences.isIncludeOptionalConfigurationFiles());
+    assertTrue(DeployPreferences.DEFAULT_INCLUDE_OPTIONAL_CONFIGURATION_FILES);
   }
 
 }

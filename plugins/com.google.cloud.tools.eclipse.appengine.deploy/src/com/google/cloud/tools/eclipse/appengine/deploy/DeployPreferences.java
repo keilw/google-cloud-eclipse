@@ -37,11 +37,15 @@ public class DeployPreferences {
   static final String PREF_CUSTOM_BUCKET = "project.bucket";
   static final String PREF_STOP_PREVIOUS_VERSION = "project.previousVersion.stop"; // boolean
 
-  private final IEclipsePreferences preferenceStore;
+  public static final String DEFAULT_ACCOUNT_EMAIL = "";
+  public static final String DEFAULT_PROJECT_ID = "";
+  public static final String DEFAULT_CUSTOM_VERSION = "";
+  public static final boolean DEFAULT_ENABLE_AUTO_PROMOTE = true;
+  public static final boolean DEFAULT_INCLUDE_OPTIONAL_CONFIGURATION_FILES = true;
+  public static final String DEFAULT_CUSTOM_BUCKET = "";
+  public static final boolean DEFAULT_STOP_PREVIOUS_VERSION = true;
 
-  public static DeployPreferences getDefaultPreferences() {
-    return new DeployPreferences(DeployPreferenceInitializer.getDefaultPreferences());
-  }
+  private final IEclipsePreferences preferenceStore;
 
   public DeployPreferences(IProject project) {
     this(new ProjectScope(project).getNode(PREFERENCE_STORE_QUALIFIER));
@@ -57,8 +61,7 @@ public class DeployPreferences {
   }
 
   public String getAccountEmail() {
-    return preferenceStore.get(PREF_ACCOUNT_EMAIL,
-                               DeployPreferenceInitializer.DEFAULT_ACCOUNT_EMAIL);
+    return preferenceStore.get(PREF_ACCOUNT_EMAIL, DEFAULT_ACCOUNT_EMAIL);
   }
 
   public void setAccountEmail(String accountEmail) {
@@ -66,7 +69,7 @@ public class DeployPreferences {
   }
 
   public String getProjectId() {
-    return preferenceStore.get(PREF_PROJECT_ID, DeployPreferenceInitializer.DEFAULT_PROJECT_ID);
+    return preferenceStore.get(PREF_PROJECT_ID, DEFAULT_PROJECT_ID);
   }
 
   public void setProjectId(String projectId) {
@@ -74,8 +77,7 @@ public class DeployPreferences {
   }
 
   public String getVersion() {
-    return preferenceStore.get(PREF_CUSTOM_VERSION,
-                               DeployPreferenceInitializer.DEFAULT_CUSTOM_VERSION);
+    return preferenceStore.get(PREF_CUSTOM_VERSION, DEFAULT_CUSTOM_VERSION);
   }
 
   public void setVersion(String version) {
@@ -83,8 +85,7 @@ public class DeployPreferences {
   }
 
   public boolean isAutoPromote() {
-    return preferenceStore.getBoolean(PREF_ENABLE_AUTO_PROMOTE,
-                                      DeployPreferenceInitializer.DEFAULT_ENABLE_AUTO_PROMOTE);
+    return preferenceStore.getBoolean(PREF_ENABLE_AUTO_PROMOTE, DEFAULT_ENABLE_AUTO_PROMOTE);
   }
 
   public void setAutoPromote(boolean autoPromote) {
@@ -93,7 +94,7 @@ public class DeployPreferences {
 
   public boolean isIncludeOptionalConfigurationFiles() {
     return preferenceStore.getBoolean(PREF_INCLUDE_OPTIONAL_CONFIGURATION_FILES,
-        DeployPreferenceInitializer.DEFAULT_INCLUDE_OPTIONAL_CONFIGURATION_FILES);
+        DEFAULT_INCLUDE_OPTIONAL_CONFIGURATION_FILES);
   }
 
   public void setIncludeOptionalConfigurationFiles(boolean includeOptionalConfigurationFiles) {
@@ -102,8 +103,7 @@ public class DeployPreferences {
   }
 
   public String getBucket() {
-    return preferenceStore.get(PREF_CUSTOM_BUCKET,
-                               DeployPreferenceInitializer.DEFAULT_CUSTOM_BUCKET);
+    return preferenceStore.get(PREF_CUSTOM_BUCKET, DEFAULT_CUSTOM_BUCKET);
   }
 
   public void setBucket(String bucket) {
@@ -111,8 +111,7 @@ public class DeployPreferences {
   }
 
   public boolean isStopPreviousVersion() {
-    return preferenceStore.getBoolean(PREF_STOP_PREVIOUS_VERSION,
-                                      DeployPreferenceInitializer.DEFAULT_STOP_PREVIOUS_VERSION);
+    return preferenceStore.getBoolean(PREF_STOP_PREVIOUS_VERSION, DEFAULT_STOP_PREVIOUS_VERSION);
   }
 
   public void setStopPreviousVersion(boolean stopPreviousVersion) {
