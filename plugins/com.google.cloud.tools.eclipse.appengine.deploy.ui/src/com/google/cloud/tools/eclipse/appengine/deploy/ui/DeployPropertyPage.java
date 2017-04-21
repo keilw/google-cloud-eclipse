@@ -192,7 +192,9 @@ public class DeployPropertyPage extends PropertyPage {
 
   private void createFlexPanelIfNeeded() {
     if (flexPreferencesPanel == null) {
-      flexPreferencesPanel = new FlexDeployPreferencesPanel(container, facetedProject.getProject());
+      flexPreferencesPanel = new FlexDeployPreferencesPanel(
+          container, facetedProject.getProject(), loginService, getLayoutChangedHandler(),
+          false /* requireValues */, new ProjectRepository(googleApiFactory));
     }
   }
 }

@@ -44,7 +44,7 @@ public class FlexDeployCommandHandler extends DeployCommandHandler {
   protected StagingDelegate getStagingDelegate(IProject project, DeployPreferences preferences) {
     // TODO(chanseok): appEngineDirectory should come from "preferences".
     // https://github.com/GoogleCloudPlatform/google-cloud-eclipse/issues/1823
-    String appEngineDirectory = FlexDeployPreferences.DEFAULT.getAppEngineDirectory();
+    String appEngineDirectory = FlexDeployPreferences.DEFAULT_APP_ENGINE_DIRECTORY;
     IPath appEngineDirectoryPath = project.getFolder(appEngineDirectory).getLocation();
     return new FlexStagingDelegate(appEngineDirectoryPath);
   }

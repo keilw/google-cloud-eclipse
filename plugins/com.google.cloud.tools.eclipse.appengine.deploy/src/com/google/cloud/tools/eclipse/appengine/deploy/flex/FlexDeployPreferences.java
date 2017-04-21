@@ -24,18 +24,13 @@ import org.osgi.service.prefs.BackingStoreException;
 
 public class FlexDeployPreferences {
   public static final String PREFERENCE_STORE_QUALIFIER = "com.google.cloud.tools.eclipse.appengine.deploy.flex";
-  public static final FlexDeployPreferences DEFAULT;
 
   static final String PREF_APP_ENGINE_DIRECTORY = "appengine.config.folder";
-  static final String PREF_DOCKER_DIRECTORY = "docker.file.location";
-  static final String PREF_USE_DEPLOYMENT_PREFERENCES = "use.deployment.preferences";
 
-  private IEclipsePreferences preferenceStore;
+  public static final String DEFAULT_APP_ENGINE_DIRECTORY = "src/main/appengine";
 
-  static {
-    DEFAULT = new FlexDeployPreferences(FlexDeployPreferenceInitializer.getDefaultPreferences());
-  }
-  
+  private final IEclipsePreferences preferenceStore;
+
   public FlexDeployPreferences(IProject project) {
     this(new ProjectScope(project).getNode(PREFERENCE_STORE_QUALIFIER));
   }
@@ -50,30 +45,11 @@ public class FlexDeployPreferences {
   }
 
   public String getAppEngineDirectory() {
-    return preferenceStore.get(PREF_APP_ENGINE_DIRECTORY,
-        FlexDeployPreferenceInitializer.DEFAULT_APP_ENGINE_DIRECTORY);
+    return preferenceStore.get(PREF_APP_ENGINE_DIRECTORY, DEFAULT_APP_ENGINE_DIRECTORY);
   }
 
   public void setAppEngineDirectory(String appEngineDirectory) {
     preferenceStore.put(PREF_APP_ENGINE_DIRECTORY, appEngineDirectory);
-  }
-  
-  public String getDockerDirectory() {
-    return preferenceStore.get(PREF_DOCKER_DIRECTORY,
-        FlexDeployPreferenceInitializer.DEFAULT_DOCKER_DIRECTORY);
-  }
-
-  public void setDockerDirectory(String dockerDirectory) {
-    preferenceStore.put(PREF_DOCKER_DIRECTORY, dockerDirectory);
-  }
-
-  public boolean getUseDeploymentPreferences() {
-    return preferenceStore.getBoolean(PREF_USE_DEPLOYMENT_PREFERENCES,
-        FlexDeployPreferenceInitializer.DEFAULT_USE_DEPLOYMENT_PREFERENCES);
-  }
-
-  public void setUseDeploymentPreferences(boolean useDeploymentPreferences) {
-    preferenceStore.putBoolean(PREF_USE_DEPLOYMENT_PREFERENCES, useDeploymentPreferences);
   }
 
 }
