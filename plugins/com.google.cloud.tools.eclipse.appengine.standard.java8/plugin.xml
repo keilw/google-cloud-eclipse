@@ -19,7 +19,7 @@
             group="com.google.cloud.tools.eclipse.appengine.facets.standard.constraints.servlet">
          <include
                facet="jst.web"
-               versions="[2.5,3.1]">
+               versions="[2.5-3.1]">
          </include>
       </members>
       <members

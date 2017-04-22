@@ -21,10 +21,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.server.core.model.RuntimeDelegate;
 
 public class AppToolsRuntime extends RuntimeDelegate {
-  public AppToolsRuntime() {
-    System.out.println("AppToolsRuntime!");
-  }
-
   @Override
   public IStatus validate() {
     // TODO Check validation from app tools lib?
